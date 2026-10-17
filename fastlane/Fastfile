@@ -19,9 +19,12 @@ platform :ios do
       get_provisioning_profile(api_key: api_key)
     end
 
+    workspace_path = Dir["ios/*.xcworkspace"].first
+    scheme_name = File.basename(workspace_path, ".xcworkspace")
+
     build_app(
-      workspace: "ios/Piwowar.xcworkspace",
-      scheme: "Piwowar",
+      workspace: workspace_path,
+      scheme: scheme_name,
       export_method: "app-store"
     )
 
@@ -43,11 +46,16 @@ platform :ios do
         is_key_content_base64: is_base64,
         in_house: false
       )
+      get_certificates(api_key: api_key)
+      get_provisioning_profile(api_key: api_key)
     end
 
+    workspace_path = Dir["ios/*.xcworkspace"].first
+    scheme_name = File.basename(workspace_path, ".xcworkspace")
+
     build_app(
-      workspace: "ios/Piwowar.xcworkspace",
-      scheme: "Piwowar",
+      workspace: workspace_path,
+      scheme: scheme_name,
       export_method: "app-store"
     )
 
