@@ -1,0 +1,422 @@
+[
+  {
+    "locale": "pl",
+    "language": "Polish",
+    "app_store": {
+      "title": "Piwowar — Asystent Warzenia",
+      "subtitle": "Dziennik warek & kalkulator",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "piwo,warzenie,piwowar,receptury,kalkulator,piwowarstwo,beerxml,bjcp,tilt,fermentacja",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "en",
+    "language": "English",
+    "app_store": {
+      "title": "Brewcraft — Brewing Assistant",
+      "subtitle": "Brew day timer & batch ledger",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "brewing,homebrew,beer,beerxml,bjcp,hydrometer,tilt,brewday,fermentation,refractometer",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "de",
+    "language": "German",
+    "app_store": {
+      "title": "Brewcraft — Brauassistent",
+      "subtitle": "Sudbuch & Brautag Timer",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bier,brauen,heimbrauer,sudhaus,maischen,rezept,bierxml,bjcp,gärung,rechner",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "cs",
+    "language": "Czech",
+    "app_store": {
+      "title": "Piwowar — Varný Asistent",
+      "subtitle": "Deník várek a kalkulačky",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "pivo,domovarnik,vareni,rmutovani,chmelovar,kvaseni,recepty,bierxml,bjcp,tilt",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "sk",
+    "language": "Slovak",
+    "app_store": {
+      "title": "Piwowar — Asistent Varenia",
+      "subtitle": "Denník várok a kalkulačky",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "pivo,varenie,domovarnik,kvasenie,recepty,beerxml,bjcp,tilt,chmel,slad",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "fr",
+    "language": "French",
+    "app_store": {
+      "title": "Brewcraft — Brassage Amateur",
+      "subtitle": "Journal de brassin et minuteur",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "biere,brassage,brasseur,houblon,malt,recette,fermentation,densite,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "es",
+    "language": "Spanish",
+    "app_store": {
+      "title": "Brewcraft — Cerveza Casera",
+      "subtitle": "Diario de lotes y calculadora",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "cerveza,elaboracion,lotes,recetas,lupulo,malta,fermentacion,densimetro,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "es-419",
+    "language": "Spanish Latin America",
+    "app_store": {
+      "title": "Brewcraft — Cerveza Artesanal",
+      "subtitle": "Calculadora y lotes de cerveza",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "cerveza,artesanal,lotes,recetas,lupulo,malta,fermentacion,densidad,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "it",
+    "language": "Italian",
+    "app_store": {
+      "title": "Brewcraft — Birra Fatta in Cas",
+      "subtitle": "Diario cotte e calcolatori",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "birra,homebrewing,cotta,luppolo,malto,fermentazione,densimetro,ricette,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "nl",
+    "language": "Dutch",
+    "app_store": {
+      "title": "Brewcraft — Brouw Assistent",
+      "subtitle": "Brouwlogboek en rekenhulp",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bier,brouwen,hobbybrouwer,hop,mout,vergisting,recepten,densiteit,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "pt",
+    "language": "Portuguese",
+    "app_store": {
+      "title": "Brewcraft — Produção de Cervej",
+      "subtitle": "Diário de lotes e timer",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "cerveja,artesanal,brassagem,lupulo,malte,fermentacao,densimetro,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "pt-BR",
+    "language": "Portuguese Brazil",
+    "app_store": {
+      "title": "Brewcraft — Cerveja Artesanal",
+      "subtitle": "Controle de lotes e brassagem",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "cerveja,artesanal,caseira,brassagem,lupulo,malte,fermentacao,densidade,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "sv",
+    "language": "Swedish",
+    "app_store": {
+      "title": "Brewcraft — Bryggarassistent",
+      "subtitle": "Brygglogg och kalkylatorer",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "öl,bryggning,hembryggning,humle,malt,jäst,jäsning,recept,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "da",
+    "language": "Danish",
+    "app_store": {
+      "title": "Brewcraft — Brygassistent",
+      "subtitle": "Bryglog og lommeregner",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "øl,håndbryg,brygning,humle,malt,gæring,opskrifter,beerxml,bjcp,tilt",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "nb",
+    "language": "Norwegian",
+    "app_store": {
+      "title": "Brewcraft — Bryggeassistent",
+      "subtitle": "Bryggelogge og kalkulator",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "øl,heimebrygging,brygging,humle,malt,gjæring,oppskrifter,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "fi",
+    "language": "Finnish",
+    "app_store": {
+      "title": "Brewcraft — Oluenvalmistus",
+      "subtitle": "Päiväkirja ja laskimet",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "olut,kotiolut,paneminen,humala,mallas,käyminen,reseptit,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "uk",
+    "language": "Ukrainian",
+    "app_store": {
+      "title": "Piwowar — Крафтове Варіння",
+      "subtitle": "Журнал варок і таймер",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "пиво,варіння,крафт,бродіння,хміль,солод,рецепти,beerxml,bjcp,густина",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "ru",
+    "language": "Russian",
+    "app_store": {
+      "title": "Brewcraft — Домашнее Пиво",
+      "subtitle": "Журнал варок и калькулятор",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "пиво,пивоварение,варка,хмель,солод,брожение,рецепты,beerxml,bjcp,плотность",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "hu",
+    "language": "Hungarian",
+    "app_store": {
+      "title": "Brewcraft — Sörfőző Aszisztens",
+      "subtitle": "Főzési napló és kalkulátor",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "sör,sörfőzés,házi,komló,maláta,erjedés,receptek,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "ro",
+    "language": "Romanian",
+    "app_store": {
+      "title": "Brewcraft — Preparare Bere",
+      "subtitle": "Jurnal de loturi și calculator",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bere,artizanala,fierbere,hamei,malt,fermentare,retete,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "bg",
+    "language": "Bulgarian",
+    "app_store": {
+      "title": "Brewcraft — Домашно Пивоварств",
+      "subtitle": "Дневник на варките и таймер",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "бира,пивоварство,хмел,малц,ферментация,рецепти,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "hr",
+    "language": "Croatian",
+    "app_store": {
+      "title": "Brewcraft — Kuhanje Piva",
+      "subtitle": "Dnevnik kuhanja i kalkulatori",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "pivo,kuhanje,domace,hmelj,slad,vrenje,recepti,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "sl",
+    "language": "Slovenian",
+    "app_store": {
+      "title": "Brewcraft — Varjenje Piva",
+      "subtitle": "Dnevnik varjenja in kalkulator",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "pivo,varjenje,domace,hmelj,slad,vrenje,recepti,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "sr",
+    "language": "Serbian",
+    "app_store": {
+      "title": "Brewcraft — Кување Пива",
+      "subtitle": "Дневник кувања и тајмер",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "пиво,кување,домаће,хмељ,слад,врење,рецепти,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "lt",
+    "language": "Lithuanian",
+    "app_store": {
+      "title": "Brewcraft — Alaus Virimas",
+      "subtitle": "Virimo žurnalas ir skaičiuoklė",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "alus,virimas,namuose,apyniai,salyklas,fermentacija,receptai,beerxml",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "lv",
+    "language": "Latvian",
+    "app_store": {
+      "title": "Brewcraft — Alus Brūvēšana",
+      "subtitle": "Brūvēšanas žurnāls un taimeris",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "alus,brūvēšana,mājās,apiņi,iesals,rūgšana,receptes,beerxml",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "et",
+    "language": "Estonian",
+    "app_store": {
+      "title": "Brewcraft — Õllepruulimine",
+      "subtitle": "Pruulipäevik ja kalkulaator",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "õlu,pruulimine,kodus,humal,linased,käärimine,retseptid,beerxml",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "tr",
+    "language": "Turkish",
+    "app_store": {
+      "title": "Brewcraft — Evde Bira Yapımı",
+      "subtitle": "Parti günlüğü ve sayaç",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bira,evde,yapim,serbetciotu,malt,mayalanma,tarifler,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "el",
+    "language": "Greek",
+    "app_store": {
+      "title": "Brewcraft — Ζυθοποιία στο Σπίτ",
+      "subtitle": "Ημερολόγιο ζυθοποίησης",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "μπυρα,ζυθοποιια,σπιτι,λυκισκος,βυνη,ζυμωση,συνταγες,beerxml",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "id",
+    "language": "Indonesian",
+    "app_store": {
+      "title": "Brewcraft — Asisten Pembuat Bi",
+      "subtitle": "Buku catatan fermentasi & time",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bir,pembuatan,fermentasi,kalkulator,resep,craft,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "ms",
+    "language": "Malay",
+    "app_store": {
+      "title": "Brewcraft — Pembancuh Bir Kraf",
+      "subtitle": "Log kelompok & pemasa bancuh",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bir,kraf,penapaian,kalkulator,resipi,bancuhan,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "vi",
+    "language": "Vietnamese",
+    "app_store": {
+      "title": "Brewcraft — Nấu Bia Thủ Công",
+      "subtitle": "Nhật ký mẻ nấu và hẹn giờ",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "bia,thucong,naubia,lenmen,hoabia,machnha,congthuc,beerxml",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "ja",
+    "language": "Japanese",
+    "app_store": {
+      "title": "Brewcraft — クラフトビール醸造",
+      "subtitle": "仕込みタイマーと醸造記録",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "ビール,醸造,クラフトビール,仕込み,発酵,ホップ,モルト,比重計,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "ko",
+    "language": "Korean",
+    "app_store": {
+      "title": "Brewcraft — 홈브루잉 맥주 양조",
+      "subtitle": "양조 타이머 및 배치 일지",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "맥주,양조,홈브루잉,수제맥주,발효,비중계,홉,몰트,레시피,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  },
+  {
+    "locale": "zh-Hant",
+    "language": "Traditional Chinese",
+    "app_store": {
+      "title": "Brewcraft — 精釀啤酒釀造助手",
+      "subtitle": "釀造計時與批次記錄日誌",
+      "promotional_text": "100% Offline-first craft brewing assistant with Tilt BLE hydrometer support, BeerXML 1.0, BJCP 2021, and zero-tracking privacy guarantee.",
+      "keywords": "啤酒,自釀,精釀,釀造,發酵,比重計,啤酒花,麥芽,配方,beerxml,bjcp",
+      "support_url": "https://github.com/lkarwowski494/piwowar",
+      "marketing_url": "https://github.com/lkarwowski494/piwowar"
+    }
+  }
+]

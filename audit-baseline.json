@@ -1,0 +1,31 @@
+{
+  "project": "Piwowar (Brewcraft)",
+  "version": "1.0.0",
+  "generated_at": "2026-10-18T00:05:00.000Z",
+  "git_branch": "main",
+  "metrics": {
+    "test_suites_total": 7,
+    "test_suites_passing": 7,
+    "tests_total": 71,
+    "tests_passing": 71,
+    "tests_failing": 0,
+    "tests_skipped": 0,
+    "test_duration_ms": 1285,
+    "typescript_errors": 0,
+    "locales_count": 35,
+    "locale_keys_per_file": 77,
+    "sqlite_tables_count": 8,
+    "deterministic_vectors_count": 32,
+    "offline_network_calls": 0,
+    "tracking_sdks_count": 0
+  },
+  "verdict": "GO",
+  "compliance": {
+    "offline_first": true,
+    "wcag_aaa_contrast": true,
+    "touch_targets_min_56pt": true,
+    "apple_privacy_manifest": true,
+    "zero_data_loss_wal": true,
+    "anti_ai_slop_mandate": true
+  }
+}
