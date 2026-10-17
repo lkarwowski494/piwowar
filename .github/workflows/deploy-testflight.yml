@@ -29,7 +29,7 @@ env:
 jobs:
   build:
     name: Archive & Upload (.ipa -> TestFlight)
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 90
     outputs:
       version: ${{ steps.ver.outputs.version }}
@@ -47,15 +47,13 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Select Xcode 16
-        run: |
-          sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
-          xcodebuild -version
+      - name: Select Xcode 26 (iOS 26 SDK)
+        run: bash .github/scripts/select-xcode.sh 26
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Run verification suite
+      - name: Run quality gates (Verify)
         run: npm run verify
 
       - name: Prebuild native iOS project
@@ -82,6 +80,9 @@ jobs:
         working-directory: ios
         run: pod install
 
+      - name: Ensure iOS Platform SDK matches selected Xcode
+        run: bash scripts/ci/ensure-ios-platform.sh
+
       - name: Archive (Release, unsigned build step)
         env:
           CI: '1'
@@ -107,7 +108,7 @@ jobs:
             exit 1
           fi
 
-      - name: Prepare App Store Connect API Key (.p8)
+      - name: Prepare App Store Connect API Key (.p8) after pod install & archive
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -116,7 +117,7 @@ jobs:
         run: |
           set +x
           if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_ISSUER_ID" ] || [ -z "$ASC_KEY_P8_CONTENT" ]; then
-            echo "::error::Brak wymaganych sekretów: ASC_KEY_ID, ASC_ISSUER_ID lub ASC_KEY_P8"
+            echo "::error::Brak wymaganego sekretu GitHub: ASC_KEY_ID, ASC_ISSUER_ID lub ASC_KEY_P8"
             exit 1
           fi
           umask 077
