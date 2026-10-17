@@ -19,12 +19,11 @@ platform :ios do
       get_provisioning_profile(api_key: api_key)
     end
 
-    workspace_path = Dir["ios/*.xcworkspace"].first
-    scheme_name = File.basename(workspace_path, ".xcworkspace")
+    workspace_path = File.expand_path("../ios/PiwowarBrewcraft.xcworkspace", __dir__)
 
     build_app(
       workspace: workspace_path,
-      scheme: scheme_name,
+      scheme: "PiwowarBrewcraft",
       export_method: "app-store"
     )
 
@@ -50,12 +49,11 @@ platform :ios do
       get_provisioning_profile(api_key: api_key)
     end
 
-    workspace_path = Dir["ios/*.xcworkspace"].first
-    scheme_name = File.basename(workspace_path, ".xcworkspace")
+    workspace_path = File.expand_path("../ios/PiwowarBrewcraft.xcworkspace", __dir__)
 
     build_app(
       workspace: workspace_path,
-      scheme: scheme_name,
+      scheme: "PiwowarBrewcraft",
       export_method: "app-store"
     )
 
