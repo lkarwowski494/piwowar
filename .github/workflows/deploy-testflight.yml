@@ -100,7 +100,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | tee /tmp/xcodebuild-archive.log | grep -E "^(===|CompileC|Ld |Touch |RegisterExecutionPolicyException|*\* ARCHIVE|error:|warning:.*\berror\b)" || true
+            2>&1 | tee /tmp/xcodebuild-archive.log | grep --line-buffered -E "^(===|CompileC|Ld |Touch |RegisterExecutionPolicyException|*\* ARCHIVE|error:|warning:.*\berror\b)" || true
 
           if [ ! -d "$RUNNER_TEMP/$APP_SCHEME.xcarchive/Products/Applications/$APP_SCHEME.app" ]; then
             echo "::error::Archiwum .xcarchive nie powstało — ostatnie 80 linii logu:"
@@ -112,7 +112,7 @@ jobs:
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_P8_CONTENT: ${{ secrets.ASC_KEY_P8 || secrets.ASC_KEY_CONTENT }}
+          ASC_KEY_P8_CONTENT: ${{ secrets.ASC_KEY_P8_BASE64 || secrets.ASC_KEY_P8 || secrets.ASC_KEY_CONTENT }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || '8NQ9GHY8GF' }}
         run: |
           set +x
@@ -211,3 +211,41 @@ jobs:
             echo "| **Commit** | \`${GITHUB_SHA}\` |"
             echo "| **Notatka** | ${RELEASE_NOTES:-*(brak)*} |"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload scrubbed logs on failure only (retention 1 day)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-xcodebuild-logs-${{ github.run_number }}
+          path: /tmp/xcodebuild-*.log
+          retention-days: 1
+
+  tag:
+    name: Create Git Tag
+    needs: build
+    if: success()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Create and push tag vX.Y.Z-bNNNN
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+          BUILD: ${{ needs.build.outputs.build_number }}
+        run: |
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]] || ! [[ "$BUILD" =~ ^[0-9]+$ ]]; then
+            echo "::error::Nieprawidłowe dane wyjściowe wersji lub buildu: VERSION='$VERSION' BUILD='$BUILD'"
+            exit 1
+          fi
+          TAG="v${VERSION}-b${BUILD}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$TAG" "$GITHUB_SHA"
+          git push origin "$TAG" --force
+
