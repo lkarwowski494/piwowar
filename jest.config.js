@@ -4,5 +4,8 @@ module.exports = {
     '^.+\\.(ts|tsx)$': ['babel-jest', { configFile: './babel.config.js' }]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleNameMapper: {
+    '^react-native$': '<rootDir>/__mocks__/react-native.js'
+  },
   testMatch: ['**/tests/**/*.test.ts']
 };

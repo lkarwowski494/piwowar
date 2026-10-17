@@ -15,29 +15,50 @@ export interface UndoState {
   triggerUndo: () => Promise<void>;
 }
 
+let undoTimer: any = null;
+
 export const useUndoStore = create<UndoState>((set, get) => ({
   visible: false,
   message: '',
   onUndo: null,
 
   showUndo: (message: string, onUndo: () => Promise<void> | void) => {
+    if (undoTimer) {
+      clearTimeout(undoTimer);
+      undoTimer = null;
+    }
+
     set({
       visible: true,
       message,
       onUndo
     });
 
-    // Auto-hide after 5 seconds if not triggered
-    setTimeout(() => {
+    undoTimer = setTimeout(() => {
       if (get().visible && get().message === message) {
         set({ visible: false, onUndo: null });
       }
     }, 5000);
+
+    if (undoTimer && typeof undoTimer.unref === 'function') {
+      undoTimer.unref();
+    }
   },
 
-  hideUndo: () => set({ visible: false, onUndo: null }),
+  hideUndo: () => {
+    if (undoTimer) {
+      clearTimeout(undoTimer);
+      undoTimer = null;
+    }
+    set({ visible: false, onUndo: null });
+  },
 
   triggerUndo: async () => {
+    if (undoTimer) {
+      clearTimeout(undoTimer);
+      undoTimer = null;
+    }
+
     const { onUndo } = get();
     if (onUndo) {
       try {
