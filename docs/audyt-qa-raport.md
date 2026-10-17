@@ -13,9 +13,10 @@
 | Metryka Audytorska | Wartość Wymagana | Wartość Zmierzona | Status |
 | :--- | :---: | :---: | :---: |
 | **Główna Bramka Jakości (`npm run verify`)** | Kod wyjścia `0` | Kod wyjścia `0` (PASS) | ✅ ZDANE |
-| **Zestaw Testów Jednostkowych i Integracyjnych** | 100% PASS (0 skipped) | 71 / 71 testów PASS w 1.28s | ✅ ZDANE |
+| **Zestaw Testów Jednostkowych i Integracyjnych** | 100% PASS (0 skipped) | 219 / 219 testów PASS w 2.21s (12/12 suit) | ✅ ZDANE |
 | **Zgodność Typów TypeScript (`tsc --noEmit`)** | 0 błędów, 0 `any` | 0 błędów | ✅ ZDANE |
 | **Spójność Słowników Wielojęzycznych (35 Języków)** | 100% symetrii kluczy | 35 / 35 plików, 77 kluczy, 0 błędów | ✅ ZDANE |
+| **Zamknięcie Luk Jakościowych (GAP-DAT, GAP-TZ, GAP-PBT)** | 3/3 luki zaadresowane | 100% testów odporności i stref czasowych PASS | ✅ ZDANE |
 | **Ochrona przed wybuchem szkła (Bottle Bomb Blocker)** | 100% detekcji ryzyka | Wektor `VEC-BOT-03` zablokowany z alertem | ✅ ZDANE |
 | **Odporność SQLite na uśpienie (`0xDEAD10CC`)** | Tryb WAL + busy_timeout 5s | Wdrożone w DDL i adapterach | ✅ ZDANE |
 | **Niezależność od Sieci (Zero Network Offline)** | 0 zapytań HTTP na starcie | 0 żądań sieciowych, 100% lokalny SQLite | ✅ ZDANE |

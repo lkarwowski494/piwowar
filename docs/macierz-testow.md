@@ -1,8 +1,8 @@
 # Macierz Testów, Weryfikacji i Potoków CI/CD (Test Architecture & CI/CD Strategy)
 *Projekt:* Piwowar (Brewcraft)  
 *Rola:* Principal Test Architect & Quality Automation Engineer  
-*Wersja dokumentu:* 1.0.0-PROD  
-*Status:* Verified & Passing (71/71 tests PASS)  
+*Wersja dokumentu:* 1.1.0-PROD  
+*Status:* Verified & Passing (12/12 suites, 219/219 tests PASS)  
 *Standard:* IEEE 829/29119, Testing Trophy, Property-Based Testing, 4-Tier CI Pipeline  
 
 ---
@@ -14,13 +14,14 @@ System Piwowar (Brewcraft) chroniony jest przed usterkami w 10 komplementarnych 
 | Wymiar | Kategoria | Zakres Weryfikacji | Zastosowany Mechanizm / Test |
 | :---: | :--- | :--- | :--- |
 | **LOG** | Logika domenowa i brzegowa | Wartości graniczne, ujemne, dzielenie przez zero, zaokrąglenia | `tests/brewing.test.ts` (32 wektory deterministyczne) |
-| **PBT** | Property-Based Testing | Niezmienniki matematyczne (odwracalność ASBC Plato ↔ SG: $f(f^{-1}(x)) = x$) | `tests/brewing.test.ts` (Symetria konwersji gęstości) |
+| **PBT** | Property-Based Testing | Niezmienniki matematyczne (odwracalność ASBC Plato ↔ SG: $f(f^{-1}(x)) = x$, monotoniczność ABV i IBU, deterministyczny seed `PROP_SEED`) | `tests/pbt.test.ts` (GAP-PBT-01 Zamknięty) |
 | **DIFF** | Testy Różnicowe (Wyrocznia) | Weryfikacja formuł fizyko-chemicznych z modelami referencyjnymi Palmera i Terrilla | Porównanie z tolerancją $\pm 0.0005$ SG i $\pm 0.5$ IBU |
 | **UX/A11Y** | Ergonomia i Dostępność | Kontrakty dotykowe Apple HIG $\ge 56\,\text{pt}$, etykiety `accessibilityLabel` | `tests/components.test.ts` (Weryfikacja Thumb Zone) |
 | **CONC** | Współbieżność i Wyścigi | Równoległe modyfikacje warki, podwójne kliknięcie zapisu | Transakcyjne blokady SQLite ACID |
-| **DAT** | Integralność Danych i SQLite | Odporność na uśpienie iOS (`0xDEAD10CC`), test migracji schematu | `tests/migrations.test.ts` i `tests/repositories.test.ts` |
+| **DAT** | Integralność Danych i SQLite | Odporność na awarie transakcji (Zero Partial Writes), rollback, test migracji schematu | `tests/fault_injection.test.ts` (GAP-DAT-01 Zamknięty) & `tests/migrations.test.ts` |
 | **STORE/LAW** | Zgodność Sklepowa i Paywall | Maszyna stanów limitu 3 darmowych warek, nienaruszalny Read-Only | `tests/access.test.ts` (Freemium Quota Management) |
 | **RESIL** | Odporność Procesu i Safe Mode | Przetrwanie pętli awarii przy starcie, generowanie tombstones | `tests/sre_plg.test.ts` (SafeModeCircuitBreaker) |
+| **TIME** | Niezmienniczość Czasowa | 7-strefowa matryca (UTC, Tokyo, Sydney, NY, Honolulu, Nepal), strefy ciszy powiadomień | `tests/timezone.test.ts` (GAP-TZ-01 Zamknięty) |
 | **PERF/SEC** | Wydajność i Bezpieczeństwo | Czas wykonania zapytań SQL $< 5\,\text{ms}$, 100% zapytań parametryzowanych | Zapytania parametryzowane `?`, zero string concatenation |
 | **MUT** | Czułość Testów i Mutacje | Eliminacja "martwych asercji", symulacja uszkodzeń logiki | Twarde asercje numeryczne z wąskimi tolerancjami |
 
