@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Piwowar (Brewcraft)",
+    "slug": "piwowar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#101216"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.apps4craft.piwowar",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "Aplikacja Piwowar używa Bluetooth wyłącznie do bezprzewodowego odczytu gęstości i temperatury ze spławika cyfrowego Tilt Hydrometer w 100% offline."
+      }
+    },
+    "android": {
+      "package": "com.apps4craft.piwowar",
+      "adaptiveIcon": {
+        "backgroundColor": "#101216"
+      },
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT"
+      ]
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "piwowar"
+  }
+}
