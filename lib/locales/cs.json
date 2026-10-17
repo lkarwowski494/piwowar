@@ -58,7 +58,7 @@
   "quota_free_notice": "Bezplatný balíček: zbývá {{remaining}} ze 3 várek",
   "quota_pro_active": "Apps4Brew Pass aktivní: Neomezené várky",
   "quota_exhausted_title": "Dokončeny 3 bezplatné várky",
-  "quota_exhausted_desc": "Vaše předchozí várky, Tilt grafy a poznámky zůstávají navždy dostupné pro čtení.",
+  "quota_exhausted_desc": "Vaše předchozí várky, Tilt grafy a poznámky zůstávají navždy dostupné pro čtení. Odemkněte Apps4Brew Pass.",
   "quota_upgrade_action": "Odemknout Apps4Brew Pass",
   "calc_title": "Pivovarské kalkulačky",
   "calc_refractometer": "Refraktometr (Terrill)",

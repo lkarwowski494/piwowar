@@ -12,7 +12,14 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.apps4craft.piwowar",
       "infoPlist": {
-        "NSBluetoothAlwaysUsageDescription": "Aplikacja Piwowar używa Bluetooth wyłącznie do bezprzewodowego odczytu gęstości i temperatury ze spławika cyfrowego Tilt Hydrometer w 100% offline."
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSBluetoothAlwaysUsageDescription": "Aplikacja Piwowar używa Bluetooth wyłącznie do bezprzewodowego odczytu gęstości i temperatury ze spławika cyfrowego Tilt Hydrometer w 100% offline.",
+        "CFBundleLocalizations": [
+          "pl", "en", "cs", "sk", "hu", "ro", "bg", "hr", "sl", "sr",
+          "lt", "lv", "et", "uk", "es", "es-MX", "pt", "pt-BR", "de", "fr",
+          "it", "nl", "sv", "da", "no", "fi", "tr", "el", "id", "ms",
+          "vi", "ru", "ja", "ko", "zh-Hant"
+        ]
       }
     },
     "android": {
