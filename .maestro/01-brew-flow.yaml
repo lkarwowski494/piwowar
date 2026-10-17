@@ -1,0 +1,16 @@
+appId: com.apps4craft.piwowar
+---
+- launchApp
+- assertVisible: "Dzień Warzenia"
+- assertVisible: "Rozpocznij dzień warzenia"
+- tapOn: "Rozpocznij dzień warzenia"
+- assertVisible: "Zacieranie"
+- assertVisible: "+1 MIN"
+- tapOn: "+1 MIN"
+- tapOn: "Następny krok ▶"
+- assertVisible: "Gotowanie"
+- tapOn: "Kalkulatory"
+- assertVisible: "Refraktometr (Terrill)"
+- assertVisible: "Bottle Bomb Blocker"
+- tapOn: "Warki"
+- assertVisible: "Dziennik Warek"
