@@ -1,4 +1,4 @@
-name: CD Deploy to TestFlight (iOS)
+name: Native iOS Build & TestFlight Deploy
 
 on:
   workflow_dispatch:
@@ -8,8 +8,8 @@ on:
 
 jobs:
   deploy_ios:
-    name: Build & Submit to TestFlight
-    runs-on: ubuntu-latest
+    name: Build & Submit to TestFlight (Native macOS)
+    runs-on: macos-14
 
     steps:
       - name: Checkout Code
@@ -24,16 +24,49 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Verification Suite
+      - name: Run Verification Suite (DoD & Tests)
         run: npm run verify
 
-      - name: Setup EAS CLI
-        uses: expo/expo-github-action@v8
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+          ruby-version: '3.3'
+          bundler-cache: true
 
-      - name: Build & Submit to TestFlight
-        run: eas build --platform ios --profile production --auto-submit --non-interactive
+      - name: Generate Native iOS Xcode Project
+        run: npx expo prebuild --platform ios --no-install
+
+      - name: Install CocoaPods
+        run: pod install --project-directory=ios
+
+      - name: Install Apple Certificate & Provisioning Profile
         env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD || 'temporary-ci-keychain-pass' }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > $CERTIFICATE_PATH
+          echo "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode > $PP_PATH
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Build & Upload to TestFlight with Fastlane
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        run: bundle exec fastlane ios beta
