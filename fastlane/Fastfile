@@ -20,11 +20,31 @@ platform :ios do
     end
 
     workspace_path = File.expand_path("../ios/PiwowarBrewcraft.xcworkspace", __dir__)
+    project_path = File.expand_path("../ios/PiwowarBrewcraft.xcodeproj", __dir__)
+
+    # Auto-detect real Apple Team ID from downloaded Provisioning Profile
+    team_id = ENV["APPLE_TEAM_ID"]
+    profile_path = lane_context[SharedValues::SIGH_PROFILE_PATH] || Dir["*.mobileprovision"].first
+    if profile_path && File.exist?(profile_path)
+      parsed = `security cms -D -i "#{profile_path}" 2>/dev/null`
+      if parsed =~ /<key>TeamIdentifier<\/key>\s*<array>\s*<string>([^<]+)<\/string>/m
+        team_id = $1
+        UI.success("Auto-detected Apple Team ID from Provisioning Profile: #{team_id}")
+      end
+    end
+
+    if team_id && !team_id.empty?
+      update_project_team(
+        path: project_path,
+        teamid: team_id
+      )
+    end
 
     build_app(
       workspace: workspace_path,
       scheme: "PiwowarBrewcraft",
-      export_method: "app-store"
+      export_method: "app-store",
+      export_options: team_id ? { teamID: team_id } : {}
     )
 
     upload_to_testflight(
@@ -50,11 +70,29 @@ platform :ios do
     end
 
     workspace_path = File.expand_path("../ios/PiwowarBrewcraft.xcworkspace", __dir__)
+    project_path = File.expand_path("../ios/PiwowarBrewcraft.xcodeproj", __dir__)
+
+    team_id = ENV["APPLE_TEAM_ID"]
+    profile_path = lane_context[SharedValues::SIGH_PROFILE_PATH] || Dir["*.mobileprovision"].first
+    if profile_path && File.exist?(profile_path)
+      parsed = `security cms -D -i "#{profile_path}" 2>/dev/null`
+      if parsed =~ /<key>TeamIdentifier<\/key>\s*<array>\s*<string>([^<]+)<\/string>/m
+        team_id = $1
+      end
+    end
+
+    if team_id && !team_id.empty?
+      update_project_team(
+        path: project_path,
+        teamid: team_id
+      )
+    end
 
     build_app(
       workspace: workspace_path,
       scheme: "PiwowarBrewcraft",
-      export_method: "app-store"
+      export_method: "app-store",
+      export_options: team_id ? { teamID: team_id } : {}
     )
 
     upload_to_app_store(
