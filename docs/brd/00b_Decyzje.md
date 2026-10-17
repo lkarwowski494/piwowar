@@ -62,9 +62,11 @@ Każdy dylemat architektoniczny, biznesowy i rzemieślniczy został formalnie za
 ### `DEC-06: Strategia Monetyzacji i Podział Funkcji Darmowe vs Pro`
 - **Problem:** Co wchodzi w darmowy rdzeń, a co w Apps4Brew Pass Pro?
 - **Opcje:**
-  - **Opcja A:** Wersja darmowa: nielimitowane warki, kalkulatory i import BeerXML; Pro: Tilt BLE, woda zaawansowana, Apple Watch.
-  - **Opcja B:** Ograniczenie darmowych warek do 5.
-- **Dyspozycja Właściciela:** **6A [ZATWIERDZONE WARUNKOWO]** — *„Do ostatecznego rozstrzygnięcia podczas dedykowanego audytu strategii monetyzacji (`audyt-monetyzacji`), bo może się okazać, że to nie jest najlepszy model biznesowy”*. Do czasu audytu przyjmujemy architekturę elastyczną (Feature Flags).
+  - **Opcja A (Wstępna z BRD):** Wersja darmowa: nielimitowane warki, kalkulatory i import BeerXML; Pro: Tilt BLE, woda zaawansowana, Apple Watch. *(Zidentyfikowana w audycie jako bloker przychodu odcinający 80% płacących).*
+  - **Opcja B (Złoty Standard Apps4Craft — Wybrana):** **Freemium Quota:** pierwsze 3 warki w 100% odblokowane w standardzie Pro. Od 4. warki tworzenie nowych partii wymaga Apps4Brew Pass (0,99 €/mc, 4,99 €/rok, 14,99 € Lifetime). Archiwum dotychczasowych warek, import/eksport BeerXML i podstawowe kalkulatory pozostają bezpłatne na zawsze w trybie Read-Only.
+- **Kompromis:** Opcja B gwarantuje natychmiastowy zachwyt produktem (Aha! Moment) podczas pierwszych 3 warek, a następnie naturalną konwersję do zakupu rocznego/Lifetime bez naruszania zaufania rzemieślnika.
+- **Rekomendacja analityka:** Opcja B.
+- **Dyspozycja Właściciela:** **ZATWIERDZONO: OPCJA B (Model Freemium Quota 3 warek + Apps4Brew Pass + nienaruszalny Read-Only — szczegóły w `docs/AUDYT_PRODUKTOWY_UX_I_MONETYZACJA.md`)**.
 
 ---
 
