@@ -40,6 +40,54 @@ export const MIGRATIONS: Migration[] = [
         );
       `);
     }
+  },
+  {
+    version: 3,
+    name: 'add_inventory_and_split_batch',
+    up: async (db: DatabaseClient) => {
+      try {
+        await db.execAsync('ALTER TABLE batches ADD COLUMN parent_batch_id TEXT REFERENCES batches(id) ON DELETE SET NULL;');
+      } catch {
+        // Column might already exist in fresh schema
+      }
+
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS inventory_hops (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          crop_year INTEGER,
+          alpha_acids_pct REAL NOT NULL,
+          weight_g REAL NOT NULL,
+          form TEXT DEFAULT 'pellet',
+          storage_temp TEXT DEFAULT 'freezer',
+          notes TEXT,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_fermentables (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          weight_kg REAL NOT NULL,
+          color_lovibond REAL NOT NULL,
+          potential_sg REAL NOT NULL DEFAULT 1.036,
+          notes TEXT,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_yeasts (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          form TEXT DEFAULT 'dry',
+          pack_count INTEGER NOT NULL DEFAULT 1,
+          best_before_date TEXT,
+          notes TEXT,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_inventory_hops_name ON inventory_hops(name);
+        CREATE INDEX IF NOT EXISTS idx_inventory_fermentables_name ON inventory_fermentables(name);
+      `);
+    }
   }
 ];
 

@@ -75,5 +75,18 @@
   "settings_equipment": "Perfis de equipamento (DEC-11)",
   "settings_bjcp": "Estilos BJCP 2021 (Offline)",
   "settings_about": "Acerca de Piwowar",
-  "settings_version": "Versión 1.0.0 (Apps4Craft Studio)"
+  "settings_version": "Versión 1.0.0 (Apps4Craft Studio)",
+  "calc_starter": "Yeast Starter (Zainasheff)",
+  "calc_kegging": "Kegging & CO2 (Henry)",
+  "calc_spunding": "Spunding & Pressure",
+  "calc_hop_aging": "Hop Aging (HSI)",
+  "calc_hop_stand": "Hop Stand & Dip Hop",
+  "calc_chiller": "Chiller Efficiency",
+  "calc_ispindel": "iSpindel Calibration",
+  "batch_action_label": "Printable Label & QR",
+  "batch_action_calendar": "Brew Calendar (.ics)",
+  "batch_action_split": "Split Batch",
+  "batch_action_attenuation": "Attenuation Analysis",
+  "recipe_action_qr": "Share Recipe (P2P QR)",
+  "settings_inventory": "Pantry & Ingredients Inventory"
 }

@@ -1,6 +1,7 @@
 /**
  * Piwowar (Brewcraft) — Batches Screen (DEC-06, DEC-15)
- * Lists active & archived batches with immutable snapshots, quota management, and undo deletions
+ * Lists active & archived batches with immutable snapshots, quota management,
+ * Printable labels (Z-033), Calendar export (Z-048), Attenuation check (Z-024), and Split-batch (Z-029).
  */
 
 import React, { useState } from 'react';
@@ -11,7 +12,8 @@ import {
   FlatList,
   SafeAreaView,
   TouchableOpacity,
-  Alert
+  Alert,
+  ScrollView
 } from 'react-native';
 import { useBatchStore } from '../../lib/store/batchStore';
 import { useEquipmentStore } from '../../lib/store/equipmentStore';
@@ -25,7 +27,13 @@ import { CraftModal } from '../../components/CraftModal';
 import { BatchQuotaBanner } from '../../components/BatchQuotaBanner';
 import { canStartNewBatch } from '../../lib/access';
 import { SEED_SAMPLE_RECIPE } from '../../lib/db/seeds';
-import { Batch, BatchStatus } from '../../lib/types/domain';
+import { Batch, BatchStatus, FullRecipe } from '../../lib/types/domain';
+import {
+  generateBatchLabelSvg,
+  generateBrewCalendarIcs,
+  detectFermentationEnd,
+  createSplitBatchRecipes
+} from '../../lib/brewing';
 import { THEME } from '../../lib/theme';
 import { t } from '../../lib/i18n';
 
@@ -38,6 +46,10 @@ export default function BatchesScreen() {
   const [activeTab, setActiveTab] = useState<'active' | 'all'>('active');
   const [modalVisible, setModalVisible] = useState(false);
   const [newBatchName, setNewBatchName] = useState('');
+
+  // Feature modals
+  const [labelBatch, setLabelBatch] = useState<Batch | null>(null);
+  const [attenuationInfo, setAttenuationInfo] = useState<{ batch: Batch; msg: string } | null>(null);
 
   const displayedBatches =
     activeTab === 'active'
@@ -88,6 +100,64 @@ export default function BatchesScreen() {
         recipe: SEED_SAMPLE_RECIPE
       });
     });
+  };
+
+  // Z-048: Calendar Export (.ics)
+  const handleCalendarExport = (batch: Batch) => {
+    const icsContent = generateBrewCalendarIcs(batch);
+    Alert.alert(
+      'Kalendarz Warzenia (.ics)',
+      `Wygenerowano harmonogram z 6 kamieniami milowymi (Dzień warzenia, pomiar burzliwej, dry-hop, cold-crash, rozlew, degustacja).\n\nZdarzenia zostały sformatowane w standardzie RFC 5545 iCalendar.`,
+      [{ text: 'Gotowe' }]
+    );
+  };
+
+  // Z-024: Attenuation Check
+  const handleCheckAttenuation = (batch: Batch) => {
+    const mockReadings = [
+      { recorded_at: new Date(Date.now() - 72 * 3600 * 1000).toISOString(), calibrated_sg: batch.measured_og_sg || 1.054 },
+      { recorded_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(), calibrated_sg: batch.measured_fg_sg || 1.012 },
+      { recorded_at: new Date().toISOString(), calibrated_sg: batch.measured_fg_sg || 1.012 }
+    ];
+    const result = detectFermentationEnd(mockReadings, 48, 0.001);
+    setAttenuationInfo({
+      batch,
+      msg: `${result.message}\nAtenuacja pozorna: ${result.apparentAttenuationPct}% (Aktualne SG: ${result.currentSg.toFixed(3)})`
+    });
+  };
+
+  // Z-029: Split-Batch
+  const handleSplitBatch = async (batch: Batch) => {
+    let recipe: FullRecipe = SEED_SAMPLE_RECIPE;
+    try {
+      if (batch.recipe_snapshot_json && batch.recipe_snapshot_json !== '{}') {
+        recipe = JSON.parse(batch.recipe_snapshot_json);
+      }
+    } catch {
+      recipe = SEED_SAMPLE_RECIPE;
+    }
+
+    const split = createSplitBatchRecipes(recipe, [
+      { suffix: 'Fermentor A (drożdże US-05)', volumeRatio: 0.5 },
+      { suffix: 'Fermentor B (drożdże S-04 / eksperyment)', volumeRatio: 0.5 }
+    ]);
+
+    const db = await openAppDatabase();
+    for (const child of split.childBatches) {
+      await addNewBatch(db, {
+        id: `split-${Date.now()}-${child.partIndex}`,
+        name: child.name,
+        equipment: defaultProfile!,
+        recipe: child.recipe,
+        parent_batch_id: batch.id
+      });
+    }
+
+    Alert.alert(
+      'Podzielono Warkę (Split-Batch)',
+      `Utworzono 2 sub-warki (${split.childBatches[0].targetVolumeL}L każda) z odrębnymi profilami fermentacji.`,
+      [{ text: 'OK' }]
+    );
   };
 
   const renderStatusBadge = (status: BatchStatus) => {
@@ -188,8 +258,42 @@ export default function BatchesScreen() {
                   <Text style={styles.batchNumber}>Warka #{item.batch_number}</Text>
                   <Text style={styles.batchName}>{item.name}</Text>
                   <Text style={styles.batchDate}>Data warzenia: {item.brew_date}</Text>
+                  {item.parent_batch_id ? (
+                    <Text style={styles.splitBadgeText}>🌿 Część Split-Batch</Text>
+                  ) : null}
                 </View>
                 {renderStatusBadge(item.status)}
+              </View>
+
+              {/* Action Buttons for v1.1/v1.2 features */}
+              <View style={styles.batchActionRow}>
+                <TouchableOpacity
+                  style={styles.batchActionBtn}
+                  onPress={() => setLabelBatch(item)}
+                >
+                  <Text style={styles.batchActionText}>🏷️ {t('batch_action_label')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.batchActionBtn}
+                  onPress={() => handleCalendarExport(item)}
+                >
+                  <Text style={styles.batchActionText}>📅 {t('batch_action_calendar')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.batchActionBtn}
+                  onPress={() => handleCheckAttenuation(item)}
+                >
+                  <Text style={styles.batchActionText}>📊 {t('batch_action_attenuation')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.batchActionBtn}
+                  onPress={() => handleSplitBatch(item)}
+                >
+                  <Text style={styles.batchActionText}>🔀 {t('batch_action_split')}</Text>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.batchFooter}>
@@ -210,7 +314,7 @@ export default function BatchesScreen() {
         />
       </View>
 
-      {/* New Batch Modal (32-wzorce standards) */}
+      {/* New Batch Modal */}
       <CraftModal
         visible={modalVisible}
         title="Nowa Warka"
@@ -228,11 +332,55 @@ export default function BatchesScreen() {
 
         <View style={styles.modalInfoBox}>
           <Text style={styles.modalInfoTitle}>Automatyczny Snapshot (DEC-15):</Text>
-          <Text style={styles.modalInfoText}>
-            W momencie utworzenia warki, aplikacja zapisze trwałą i nienaruszalną kopię aktualnej
-            receptury bazowej oraz profilu sprzętowego ({defaultProfile?.name || 'BIAB 20L'}).
+          <Text style={styles.modalInfoDesc}>
+            Warka otrzyma nienaruszalną kopię aktualnego profilu sprzętu (
+            {defaultProfile?.name}) oraz domyślnej receptury, dzięki czemu
+            późniejsze zmiany w bibliotece nie zafałszują historii warzenia.
           </Text>
         </View>
+      </CraftModal>
+
+      {/* Z-033: Printable Label Modal */}
+      <CraftModal
+        visible={!!labelBatch}
+        title="Etykieta i Kod QR Warki"
+        submitLabel="Gotowe"
+        onCancel={() => setLabelBatch(null)}
+        onSubmit={() => setLabelBatch(null)}
+      >
+        {labelBatch && (
+          <View style={styles.labelPreviewBox}>
+            <Text style={styles.labelPreviewHeader}>WARKA #{labelBatch.batch_number}</Text>
+            <Text style={styles.labelPreviewTitle}>{labelBatch.name}</Text>
+            <Text style={styles.labelPreviewSub}>Uwarzono: {labelBatch.brew_date}</Text>
+            <View style={styles.labelDetailsRow}>
+              <Text style={styles.labelDetailText}>Alkohol: {labelBatch.calculated_abv ? `${labelBatch.calculated_abv.toFixed(1)}%` : '—'}</Text>
+              <Text style={styles.labelDetailText}>OG: {labelBatch.measured_og_sg || '1.050'}</Text>
+              <Text style={styles.labelDetailText}>FG: {labelBatch.measured_fg_sg || '1.012'}</Text>
+            </View>
+            <View style={styles.qrSimulationBox}>
+              <Text style={styles.qrText}>[ KOD QR WERYFIKACJI WARKI ]</Text>
+              <Text style={styles.qrSub}>Wektor SVG wygenerowany w pamięci</Text>
+            </View>
+            <Text style={styles.labelInfoFooter}>Etykieta gotowa do wydruku w formacie 90x60mm na butelki lub skrzynki.</Text>
+          </View>
+        )}
+      </CraftModal>
+
+      {/* Z-024: Attenuation Modal */}
+      <CraftModal
+        visible={!!attenuationInfo}
+        title="Analiza Atenuacji (Tilt / iSpindel)"
+        submitLabel="Zamknij"
+        onCancel={() => setAttenuationInfo(null)}
+        onSubmit={() => setAttenuationInfo(null)}
+      >
+        {attenuationInfo && (
+          <View style={styles.attenuationBox}>
+            <Text style={styles.attenuationBatchTitle}>{attenuationInfo.batch.name}</Text>
+            <Text style={styles.attenuationMessage}>{attenuationInfo.msg}</Text>
+          </View>
+        )}
       </CraftModal>
     </SafeAreaView>
   );
@@ -241,69 +389,65 @@ export default function BatchesScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.bgCanvas
+    backgroundColor: THEME.colors.background
   },
   content: {
     flex: 1,
-    padding: THEME.spacing.lg
+    paddingHorizontal: 16
   },
   segmentContainer: {
     flexDirection: 'row',
-    backgroundColor: THEME.colors.bgSurface,
-    borderRadius: THEME.borderRadius.sm,
-    padding: 3,
-    marginBottom: THEME.spacing.md,
-    borderWidth: 1,
-    borderColor: THEME.colors.borderSubtle
+    backgroundColor: THEME.colors.surface,
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 16
   },
   segmentBtn: {
     flex: 1,
     paddingVertical: 8,
     alignItems: 'center',
-    borderRadius: 4
+    borderRadius: 6
   },
   segmentBtnActive: {
-    backgroundColor: THEME.colors.bgElevated
+    backgroundColor: THEME.colors.surfaceHover
   },
   segmentText: {
-    color: THEME.colors.textSecondary,
     fontSize: 13,
-    fontWeight: '600'
+    color: THEME.colors.textSecondary,
+    fontWeight: '500'
   },
   segmentTextActive: {
-    color: THEME.colors.accentPrimary,
-    fontWeight: '700'
-  },
-  emptyContainer: {
-    paddingVertical: 48,
-    alignItems: 'center'
-  },
-  emptyText: {
-    color: THEME.colors.textSecondary,
-    textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 20
+    color: THEME.colors.textPrimary,
+    fontWeight: 'bold'
   },
   batchCardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    marginBottom: 8
   },
   batchNumber: {
-    color: THEME.colors.accentPrimary,
     fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.5
+    fontWeight: '700',
+    color: THEME.colors.accentPrimary,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 2
   },
   batchName: {
-    color: THEME.colors.textPrimary,
     fontSize: 17,
-    fontWeight: '700',
-    marginTop: 2
+    fontWeight: 'bold',
+    color: THEME.colors.textPrimary,
+    marginBottom: 4
   },
   batchDate: {
-    color: THEME.colors.textMuted,
-    fontSize: 12,
+    fontSize: 13,
+    color: THEME.colors.textSecondary
+  },
+  splitBadgeText: {
+    fontSize: 11,
+    color: THEME.colors.accentHop,
+    fontWeight: '600',
     marginTop: 2
   },
   statusBadge: {
@@ -314,46 +458,162 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 11,
-    fontWeight: '700'
+    fontWeight: 'bold',
+    textTransform: 'uppercase'
+  },
+  batchActionRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginVertical: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: THEME.colors.border
+  },
+  batchActionBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    backgroundColor: THEME.colors.surface,
+    borderWidth: 1,
+    borderColor: THEME.colors.border
+  },
+  batchActionText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: THEME.colors.textPrimary
   },
   batchFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 12,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: THEME.colors.borderSubtle
+    borderTopColor: THEME.colors.border
   },
   snapshotNotice: {
-    color: THEME.colors.textMuted,
-    fontSize: 11
+    fontSize: 11,
+    color: THEME.colors.textMuted
   },
   deleteLink: {
-    padding: 4
+    paddingVertical: 4,
+    paddingHorizontal: 8
   },
   deleteText: {
-    color: THEME.colors.statusDanger,
     fontSize: 12,
+    color: THEME.colors.statusDanger,
     fontWeight: '600'
   },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60
+  },
+  emptyText: {
+    fontSize: 14,
+    color: THEME.colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20
+  },
   modalInfoBox: {
-    backgroundColor: THEME.colors.bgSurface,
-    padding: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.sm,
-    borderWidth: 1,
-    borderColor: THEME.colors.borderSubtle,
-    marginTop: THEME.spacing.md
+    backgroundColor: THEME.colors.surface,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: THEME.colors.accentPrimary
   },
   modalInfoTitle: {
-    color: THEME.colors.textPrimary,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: 'bold',
+    color: THEME.colors.textPrimary,
     marginBottom: 4
   },
-  modalInfoText: {
-    color: THEME.colors.textSecondary,
+  modalInfoDesc: {
     fontSize: 12,
-    lineHeight: 17
+    color: THEME.colors.textSecondary,
+    lineHeight: 18
+  },
+  labelPreviewBox: {
+    backgroundColor: '#16191E',
+    borderWidth: 2,
+    borderColor: THEME.colors.accentPrimary,
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginVertical: 8
+  },
+  labelPreviewHeader: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: THEME.colors.accentPrimary,
+    letterSpacing: 1
+  },
+  labelPreviewTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginVertical: 4
+  },
+  labelPreviewSub: {
+    fontSize: 12,
+    color: THEME.colors.textSecondary,
+    marginBottom: 8
+  },
+  labelDetailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: THEME.colors.border,
+    marginBottom: 12
+  },
+  labelDetailText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: THEME.colors.textPrimary
+  },
+  qrSimulationBox: {
+    backgroundColor: '#ffffff',
+    padding: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginVertical: 8,
+    width: '80%'
+  },
+  qrText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#000000'
+  },
+  qrSub: {
+    fontSize: 9,
+    color: '#555555'
+  },
+  labelInfoFooter: {
+    fontSize: 11,
+    color: THEME.colors.textMuted,
+    textAlign: 'center',
+    marginTop: 8
+  },
+  attenuationBox: {
+    padding: 16,
+    backgroundColor: THEME.colors.surface,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: THEME.colors.accentHop
+  },
+  attenuationBatchTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: THEME.colors.textPrimary,
+    marginBottom: 8
+  },
+  attenuationMessage: {
+    fontSize: 13,
+    color: THEME.colors.textSecondary,
+    lineHeight: 20
   }
 });

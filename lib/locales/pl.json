@@ -75,5 +75,18 @@
   "settings_equipment": "Profile Sprzętowe (DEC-11)",
   "settings_bjcp": "Style BJCP 2021 (Offline)",
   "settings_about": "O aplikacji Piwowar",
-  "settings_version": "Wersja 1.0.0 (Apps4Craft Studio)"
+  "settings_version": "Wersja 1.0.0 (Apps4Craft Studio)",
+  "calc_starter": "Starter drożdżowy (Zainasheff)",
+  "calc_kegging": "Kegowanie i CO2 (Henry)",
+  "calc_spunding": "Spunding i ciśnienie",
+  "calc_hop_aging": "Starzenie chmielu (HSI)",
+  "calc_hop_stand": "Hop Stand i Dip Hop",
+  "calc_chiller": "Wydajność chłodnicy",
+  "calc_ispindel": "iSpindel kalibracja",
+  "batch_action_label": "Etykieta i QR",
+  "batch_action_calendar": "Kalendarz (.ics)",
+  "batch_action_split": "Podziel warkę",
+  "batch_action_attenuation": "Analiza atenuacji",
+  "recipe_action_qr": "Udostępnij QR (P2P)",
+  "settings_inventory": "Spiżarnia i Magazyn Surowców"
 }

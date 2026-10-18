@@ -23,7 +23,7 @@ export interface BatchState {
   loadBatches: (db: DatabaseClient) => Promise<void>;
   addNewBatch: (
     db: DatabaseClient,
-    params: { id: string; recipe?: FullRecipe; equipment: EquipmentProfile; name: string }
+    params: { id: string; recipe?: FullRecipe; equipment: EquipmentProfile; name: string; parent_batch_id?: string | null }
   ) => Promise<Batch | null>;
   removeBatch: (db: DatabaseClient, id: string) => Promise<boolean>;
   selectBatch: (batch: Batch | null) => void;

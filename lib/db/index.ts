@@ -7,3 +7,4 @@ export * from './repositories/batchRepository';
 export * from './repositories/tiltRepository';
 export * from './repositories/bjcpRepository';
 export * from './repositories/pendingOpsRepository';
+export * from './repositories/inventoryRepository';

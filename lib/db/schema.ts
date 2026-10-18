@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS batches (
     target_vco2 REAL,
     tasting_notes TEXT,
     bjcp_score INTEGER,
+    parent_batch_id TEXT REFERENCES batches(id) ON DELETE SET NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
@@ -159,9 +160,45 @@ CREATE TABLE IF NOT EXISTS pending_ops (
     created_at TEXT NOT NULL
 );
 
+-- 10. Spiżarnia i Magazyn Surowców (Z-045)
+CREATE TABLE IF NOT EXISTS inventory_hops (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    crop_year INTEGER,
+    alpha_acids_pct REAL NOT NULL,
+    weight_g REAL NOT NULL,
+    form TEXT DEFAULT 'pellet',
+    storage_temp TEXT DEFAULT 'freezer',
+    notes TEXT,
+    updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS inventory_fermentables (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    weight_kg REAL NOT NULL,
+    color_lovibond REAL NOT NULL,
+    potential_sg REAL NOT NULL DEFAULT 1.036,
+    notes TEXT,
+    updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS inventory_yeasts (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    form TEXT DEFAULT 'dry',
+    pack_count INTEGER NOT NULL DEFAULT 1,
+    best_before_date TEXT,
+    notes TEXT,
+    updated_at TEXT NOT NULL
+);
+
 -- Indeksy wydajnościowe
 CREATE INDEX IF NOT EXISTS idx_batches_status ON batches(status);
 CREATE INDEX IF NOT EXISTS idx_tilt_telemetry_batch ON tilt_telemetry(batch_id, recorded_at);
 CREATE INDEX IF NOT EXISTS idx_recipe_fermentables ON recipe_fermentables(recipe_id);
 CREATE INDEX IF NOT EXISTS idx_recipe_hops ON recipe_hops(recipe_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_hops_name ON inventory_hops(name);
+CREATE INDEX IF NOT EXISTS idx_inventory_fermentables_name ON inventory_fermentables(name);
+
 `;

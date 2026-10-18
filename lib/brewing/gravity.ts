@@ -40,3 +40,10 @@ export function brixToPlato(brix: number, wcf: number = 1.04): number {
 export function platoToBrix(plato: number, wcf: number = 1.04): number {
   return Number((plato * wcf).toFixed(2));
 }
+
+/**
+ * Converts Brix to Specific Gravity (SG)
+ */
+export function brixToSg(brix: number, wcf: number = 1.04): number {
+  return platoToSg(brixToPlato(brix, wcf));
+}

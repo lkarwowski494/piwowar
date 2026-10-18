@@ -38,3 +38,6 @@ export function scaleRecipe(
     hops: scaledHops
   };
 }
+
+export const scaleRecipeVolume = scaleRecipe;
+

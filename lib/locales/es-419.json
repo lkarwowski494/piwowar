@@ -75,5 +75,18 @@
   "settings_equipment": "Perfiles de equipo (DEC-11)",
   "settings_bjcp": "Estilos BJCP 2021 (Offline)",
   "settings_about": "Acerca de Piwowar",
-  "settings_version": "Versión 1.0.0 (Apps4Craft Studio)"
+  "settings_version": "Versión 1.0.0 (Apps4Craft Studio)",
+  "calc_starter": "Starter de levadura (Zainasheff)",
+  "calc_kegging": "Barril y CO2 (Henry)",
+  "calc_spunding": "Spunding y presion",
+  "calc_hop_aging": "Envejecimiento lupulo (HSI)",
+  "calc_hop_stand": "Hop Stand y Dip Hop",
+  "calc_chiller": "Eficiencia enfriador",
+  "calc_ispindel": "Calibracion iSpindel",
+  "batch_action_label": "Etiqueta y QR",
+  "batch_action_calendar": "Calendario de elaboracion (.ics)",
+  "batch_action_split": "Dividir lote",
+  "batch_action_attenuation": "Analisis de atenuacion",
+  "recipe_action_qr": "Compartir receta (P2P QR)",
+  "settings_inventory": "Inventario de ingredientes"
 }

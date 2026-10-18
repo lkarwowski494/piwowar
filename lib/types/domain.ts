@@ -150,6 +150,7 @@ export interface Batch {
   target_vco2?: number | null;
   tasting_notes?: string | null;
   bjcp_score?: number | null;
+  parent_batch_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -205,4 +206,36 @@ export interface WaterProfile {
   so4: number;
   cl: number;
   hco3: number;
+}
+
+export interface InventoryHop {
+  id: string;
+  name: string;
+  crop_year?: number | null;
+  alpha_acids_pct: number;
+  weight_g: number;
+  form: 'pellet' | 'plug' | 'leaf';
+  storage_temp: 'freezer' | 'fridge' | 'room' | 'warm';
+  notes?: string | null;
+  updated_at: string;
+}
+
+export interface InventoryFermentable {
+  id: string;
+  name: string;
+  weight_kg: number;
+  color_lovibond: number;
+  potential_sg: number;
+  notes?: string | null;
+  updated_at: string;
+}
+
+export interface InventoryYeast {
+  id: string;
+  name: string;
+  form: 'dry' | 'liquid';
+  pack_count: number;
+  best_before_date?: string | null;
+  notes?: string | null;
+  updated_at: string;
 }

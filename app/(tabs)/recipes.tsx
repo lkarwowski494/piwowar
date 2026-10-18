@@ -1,6 +1,6 @@
 /**
  * Piwowar (Brewcraft) — Recipes Screen (DEC-02, BR-XML-001..002, BR-REC-001)
- * Recipe library, BeerXML import/export, and instant volume scaling.
+ * Recipe library, BeerXML import/export, P2P QR Recipe sharing (Z-049), and instant volume scaling.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -22,10 +22,10 @@ import {
 } from '../../lib/db/repositories/recipeRepository';
 import { parseBeerXml, exportRecipeToBeerXml } from '../../lib/beerxml';
 import { scaleRecipe } from '../../lib/brewing/recipeScaling';
+import { encodeRecipeToQrPayload, decodeRecipeFromQrPayload } from '../../lib/brewing/recipeQr';
 import { useUndoStore } from '../../lib/store/undoStore';
 import { CraftHeader } from '../../components/CraftHeader';
 import { CraftCard } from '../../components/CraftCard';
-import { CraftButton } from '../../components/CraftButton';
 import { CraftInput } from '../../components/CraftInput';
 import { CraftModal } from '../../components/CraftModal';
 import { Recipe, FullRecipe } from '../../lib/types/domain';
@@ -87,6 +87,12 @@ export default function RecipesScreen() {
   const [selectedRecipe, setSelectedRecipe] = useState<FullRecipe | null>(null);
   const [targetVolumeStr, setTargetVolumeStr] = useState('10.0');
 
+  // P2P QR state (Z-049)
+  const [qrModalVisible, setQrModalVisible] = useState(false);
+  const [qrPayloadString, setQrPayloadString] = useState('');
+  const [qrImportInput, setQrImportInput] = useState('');
+  const [qrImportModalVisible, setQrImportModalVisible] = useState(false);
+
   const { showUndo } = useUndoStore();
 
   const loadAll = async () => {
@@ -100,10 +106,12 @@ export default function RecipesScreen() {
   }, []);
 
   const handleImportXml = async () => {
+    if (!xmlInput.trim()) return;
+
     try {
       const parsedRecipes = parseBeerXml(xmlInput);
       if (parsedRecipes.length === 0) {
-        Alert.alert('Błąd', 'Nie znaleziono poprawnych znaczników <RECIPE> w pliku BeerXML.');
+        Alert.alert('Błąd', 'Nie znaleziono poprawnych receptur w podanym pliku XML.');
         return;
       }
 
@@ -114,9 +122,9 @@ export default function RecipesScreen() {
 
       setImportModalVisible(false);
       await loadAll();
-      Alert.alert('Sukces', `Pomyślnie zaimportowano ${parsedRecipes.length} recepturę(y).`);
-    } catch (err: any) {
-      Alert.alert('Błąd importu', err.message || 'Niepoprawny format XML.');
+      Alert.alert('Sukces', `Zaimportowano ${parsedRecipes.length} receptur BeerXML.`);
+    } catch {
+      Alert.alert('Błąd parsera', 'Nie udało się przetworzyć pliku BeerXML.');
     }
   };
 
@@ -130,23 +138,56 @@ export default function RecipesScreen() {
     setExportModalVisible(true);
   };
 
+  // Z-049: Share Recipe via P2P QR
+  const handleShareQr = async (r: Recipe) => {
+    const db = await openAppDatabase();
+    const full = await getRecipeById(db, r.id);
+    if (!full) return;
+
+    const qrPayload = encodeRecipeToQrPayload(full);
+    setQrPayloadString(qrPayload);
+    setQrModalVisible(true);
+  };
+
+  // Z-049: Import Recipe via P2P QR
+  const handleImportQr = async () => {
+    if (!qrImportInput.trim()) return;
+
+    const recipe = decodeRecipeFromQrPayload(qrImportInput.trim());
+    if (!recipe) {
+      Alert.alert('Błąd', 'Nieprawidłowy kod lub link receptury P2P.');
+      return;
+    }
+
+    const db = await openAppDatabase();
+    await createRecipe(db, recipe);
+    setQrImportModalVisible(false);
+    setQrImportInput('');
+    await loadAll();
+    Alert.alert('Sukces', `Zaimportowano recepturę z kodu QR: ${recipe.name}`);
+  };
+
   const handleOpenScale = async (r: Recipe) => {
     const db = await openAppDatabase();
     const full = await getRecipeById(db, r.id);
     if (!full) return;
 
     setSelectedRecipe(full);
-    setTargetVolumeStr(String(full.target_volume_l / 2));
+    setTargetVolumeStr(String(full.target_volume_l));
     setScaleModalVisible(true);
   };
 
   const handleExecuteScale = async () => {
     if (!selectedRecipe) return;
+
     const newVol = parseFloat(targetVolumeStr);
-    if (isNaN(newVol) || newVol <= 0) return;
+    if (isNaN(newVol) || newVol <= 0) {
+      Alert.alert('Błąd', 'Podaj prawidłową objętość w litrach (większą od zera).');
+      return;
+    }
 
     const scaled = scaleRecipe(selectedRecipe, newVol);
-    scaled.id = `rec-scaled-${Date.now()}`;
+    scaled.id = `recipe-${Date.now()}`;
     scaled.name = `${selectedRecipe.name} (${newVol} L)`;
 
     const db = await openAppDatabase();
@@ -175,13 +216,23 @@ export default function RecipesScreen() {
       <CraftHeader
         title={t('recipes_title')}
         actionButton={{
-          label: 'Import BeerXML',
-          accessibilityLabel: 'Importuj BeerXML',
+          label: 'Importuj',
+          accessibilityLabel: 'Importuj recepturę',
           onPress: () => setImportModalVisible(true)
         }}
       />
 
       <View style={styles.content}>
+        {/* Secondary action row */}
+        <View style={styles.secondaryRow}>
+          <TouchableOpacity
+            style={styles.p2pButton}
+            onPress={() => setQrImportModalVisible(true)}
+          >
+            <Text style={styles.p2pButtonText}>📥 Import z kodu QR (P2P)</Text>
+          </TouchableOpacity>
+        </View>
+
         <FlatList
           data={recipes}
           keyExtractor={(item) => item.id}
@@ -213,6 +264,15 @@ export default function RecipesScreen() {
               <View style={styles.actionsRow}>
                 <TouchableOpacity
                   style={styles.actionLink}
+                  onPress={() => handleShareQr(item)}
+                >
+                  <Text style={[styles.actionLinkText, { color: THEME.colors.primary }]}>
+                    📱 Kod QR (P2P)
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.actionLink}
                   onPress={() => handleExportRecipe(item)}
                   accessibilityRole="button"
                   accessibilityLabel="Eksportuj BeerXML"
@@ -226,7 +286,7 @@ export default function RecipesScreen() {
                   accessibilityRole="button"
                   accessibilityLabel="Skaluj objętość warki"
                 >
-                  <Text style={styles.actionLinkText}>Skaluj objętość</Text>
+                  <Text style={styles.actionLinkText}>Skaluj</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -306,6 +366,50 @@ export default function RecipesScreen() {
           keyboardType="numeric"
         />
       </CraftModal>
+
+      {/* P2P QR Share Modal (Z-049) */}
+      <CraftModal
+        visible={qrModalVisible}
+        title="Udostępnij przez Kod QR (P2P)"
+        submitLabel="Gotowe"
+        onCancel={() => setQrModalVisible(false)}
+        onSubmit={() => setQrModalVisible(false)}
+      >
+        <Text style={styles.modalHelper}>
+          Pokaż ten ciąg lub kod drugiemu piwowarowi na spotkaniu, aby zaimportował pełną recepturę w 100% offline:
+        </Text>
+        <CraftInput
+          label="Ciąg wymiany P2P"
+          value={qrPayloadString}
+          multiline
+          numberOfLines={6}
+          editable={false}
+          style={{ minHeight: 100, textAlignVertical: 'top', fontSize: 11 }}
+        />
+      </CraftModal>
+
+      {/* P2P QR Import Modal (Z-049) */}
+      <CraftModal
+        visible={qrImportModalVisible}
+        title="Importuj z Kodu QR (P2P)"
+        submitLabel="Zaimportuj"
+        onCancel={() => setQrImportModalVisible(false)}
+        onSubmit={handleImportQr}
+        isDirty={qrImportInput.length > 0}
+      >
+        <Text style={styles.modalHelper}>
+          Wklej ciąg receptury (zaczynający się od piwowar://recipe?d=...):
+        </Text>
+        <CraftInput
+          label="Ciąg P2P QR"
+          value={qrImportInput}
+          onChangeText={setQrImportInput}
+          placeholder="piwowar://recipe?d=..."
+          multiline
+          numberOfLines={6}
+          style={{ minHeight: 100, textAlignVertical: 'top' }}
+        />
+      </CraftModal>
     </SafeAreaView>
   );
 }
@@ -318,6 +422,23 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: THEME.spacing.lg
+  },
+  secondaryRow: {
+    marginBottom: 12
+  },
+  p2pButton: {
+    backgroundColor: THEME.colors.surface,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+    alignItems: 'center'
+  },
+  p2pButtonText: {
+    color: THEME.colors.textPrimary,
+    fontSize: 12,
+    fontWeight: '600'
   },
   emptyContainer: {
     paddingVertical: 48,
@@ -356,40 +477,42 @@ const styles = StyleSheet.create({
   specsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginVertical: 6
+    gap: 12,
+    marginVertical: 8,
+    paddingVertical: 6,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: THEME.colors.borderSubtle
   },
   specItem: {
     color: THEME.colors.accentPrimary,
     fontSize: 12,
-    fontWeight: '700'
+    fontWeight: '600'
   },
   recipeNotes: {
     color: THEME.colors.textSecondary,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 4
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginBottom: 8
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 16,
-    marginTop: 12,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: THEME.colors.borderSubtle
+    gap: 12,
+    marginTop: 6
   },
   actionLink: {
-    paddingVertical: 4
+    paddingVertical: 4,
+    paddingHorizontal: 6
   },
   actionLinkText: {
     color: THEME.colors.accentPrimary,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600'
   },
   deleteText: {
     color: THEME.colors.statusDanger,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600'
   },
   modalHelper: {

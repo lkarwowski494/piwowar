@@ -75,5 +75,18 @@
   "settings_equipment": "Anlagenprofile (DEC-11)",
   "settings_bjcp": "BJCP 2021 Stile (Offline)",
   "settings_about": "Über Piwowar",
-  "settings_version": "Version 1.0.0 (Apps4Craft Studio)"
+  "settings_version": "Version 1.0.0 (Apps4Craft Studio)",
+  "calc_starter": "Hefestarter (Zainasheff)",
+  "calc_kegging": "Kegging und CO2 (Henry)",
+  "calc_spunding": "Spundung und Druck",
+  "calc_hop_aging": "Hopfenalterung (HSI)",
+  "calc_hop_stand": "Hop Stand und Dip Hop",
+  "calc_chiller": "Kuhlereffizienz",
+  "calc_ispindel": "iSpindel Kalibrierung",
+  "batch_action_label": "Etikett und QR",
+  "batch_action_calendar": "Braukalender (.ics)",
+  "batch_action_split": "Sud teilen",
+  "batch_action_attenuation": "Vergarungsanalyse",
+  "recipe_action_qr": "Rezept teilen (P2P QR)",
+  "settings_inventory": "Zutatenlager und Speisekammer"
 }

@@ -75,5 +75,18 @@
   "settings_equipment": "Profils de matériel (DEC-11)",
   "settings_bjcp": "Styles BJCP 2021 (Hors-ligne)",
   "settings_about": "À propos de Piwowar",
-  "settings_version": "Version 1.0.0 (Apps4Craft Studio)"
+  "settings_version": "Version 1.0.0 (Apps4Craft Studio)",
+  "calc_starter": "Pied de cuve (Zainasheff)",
+  "calc_kegging": "Enfutage et CO2 (Henry)",
+  "calc_spunding": "Spunding et pression",
+  "calc_hop_aging": "Vieillissement houblon (HSI)",
+  "calc_hop_stand": "Hop Stand et Dip Hop",
+  "calc_chiller": "Efficacite refroidisseur",
+  "calc_ispindel": "Etalonnage iSpindel",
+  "batch_action_label": "Etiquette et QR",
+  "batch_action_calendar": "Calendrier de brassage (.ics)",
+  "batch_action_split": "Diviser le brassin",
+  "batch_action_attenuation": "Analyse d attenuation",
+  "recipe_action_qr": "Partager recette (P2P QR)",
+  "settings_inventory": "Inventaire des ingredients"
 }

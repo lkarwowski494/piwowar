@@ -34,7 +34,18 @@ export const THEME = {
     beerSrm11: '#D47A0E',
     beerSrm18: '#9E4508',
     beerSrm28: '#5A2204',
-    beerSrm40: '#1A0A02'
+    beerSrm40: '#1A0A02',
+
+    // Convenient Aliases
+    background: '#101216',
+    surface: '#171A21',
+    surfaceHover: '#20242E',
+    cardBackground: '#171A21',
+    border: '#282D3A',
+    primary: '#E58A2B',
+    success: '#389E58',
+    warning: '#EAA824',
+    danger: '#E03E3E'
   },
   spacing: {
     xs: 4,

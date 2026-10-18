@@ -7,7 +7,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { DatabaseClient, SQLiteRunResult } from '../database';
 
 function sanitizeParams(params: any[]): any[] {
-  return params.map((p) => (p === undefined ? null : p));
+  const flattened = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+  return flattened.map((p) => (p === undefined ? null : p));
 }
 
 export function createNodeSqliteDatabase(path: string = ':memory:'): DatabaseClient {

@@ -18,6 +18,7 @@ export interface CreateBatchParams {
   equipment: EquipmentProfile;
   name: string;
   brew_date?: string;
+  parent_batch_id?: string | null;
 }
 
 export async function getBatchCount(db: DatabaseClient): Promise<number> {
@@ -88,6 +89,7 @@ export async function createBatch(
     target_vco2: null,
     tasting_notes: null,
     bjcp_score: null,
+    parent_batch_id: params.parent_batch_id ?? null,
     created_at: now,
     updated_at: now
   };
@@ -100,7 +102,7 @@ export async function createBatch(
       measured_og_sg, measured_fg_sg, measured_volume_l,
       calculated_abv, calculated_efficiency_pct,
       bottling_date, priming_sugar_type, priming_sugar_grams,
-      target_vco2, tasting_notes, bjcp_score,
+      target_vco2, tasting_notes, bjcp_score, parent_batch_id,
       created_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?, ?,
@@ -109,7 +111,7 @@ export async function createBatch(
       ?, ?, ?,
       ?, ?,
       ?, ?, ?,
-      ?, ?, ?,
+      ?, ?, ?, ?,
       ?, ?
     );`,
     batch.id,
@@ -133,6 +135,7 @@ export async function createBatch(
     batch.target_vco2,
     batch.tasting_notes,
     batch.bjcp_score,
+    batch.parent_batch_id,
     batch.created_at,
     batch.updated_at
   );
