@@ -27,9 +27,9 @@ export default function RootLayout() {
         await loadBatches(db);
         await loadEquipment(db);
         setDbReady(true);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to initialize SQLite database:', err);
-        setInitError(err.message || 'Błąd inicjalizacji bazy danych');
+        setInitError(err instanceof Error ? err.message : 'Błąd inicjalizacji bazy danych');
       }
     }
 

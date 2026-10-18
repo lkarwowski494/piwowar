@@ -17,9 +17,9 @@ export interface SQLiteRunResult {
 
 export interface DatabaseClient {
   execAsync(sql: string): Promise<void>;
-  runAsync(sql: string, ...params: any[]): Promise<SQLiteRunResult>;
-  getAllAsync<T = any>(sql: string, ...params: any[]): Promise<T[]>;
-  getFirstAsync<T = any>(sql: string, ...params: any[]): Promise<T | null>;
+  runAsync(sql: string, ...params: (string | number | boolean | null | undefined | unknown)[]): Promise<SQLiteRunResult>;
+  getAllAsync<T = unknown>(sql: string, ...params: (string | number | boolean | null | undefined | unknown)[]): Promise<T[]>;
+  getFirstAsync<T = unknown>(sql: string, ...params: (string | number | boolean | null | undefined | unknown)[]): Promise<T | null>;
   withTransactionAsync<T>(task: () => Promise<T>): Promise<T>;
 }
 
@@ -36,6 +36,7 @@ export async function openAppDatabase(): Promise<DatabaseClient> {
   const SQLite = await import('expo-sqlite');
   const expoDb = await SQLite.openDatabaseAsync('piwowar.db');
   const client: DatabaseClient = expoDb as unknown as DatabaseClient;
+  await client.execAsync('PRAGMA busy_timeout = 5000;');
   await initDatabase(client);
   activeDb = client;
   return activeDb;
@@ -45,6 +46,7 @@ export async function openAppDatabase(): Promise<DatabaseClient> {
  * Initializes schema and runs seeds if database is newly created.
  */
 export async function initDatabase(db: DatabaseClient): Promise<void> {
+  await db.execAsync('PRAGMA busy_timeout = 5000;');
   await db.execAsync(SCHEMA_SQL);
 
   // 1. Seed equipment profiles if empty

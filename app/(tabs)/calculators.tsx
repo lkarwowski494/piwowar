@@ -236,25 +236,62 @@ export default function CalculatorsScreen() {
 
   const ispindelSg = calculateIspindelSg(parseFloat(ispindelAngle) || 45);
 
-  const calcTabs: Array<{ id: CalcTab; label: string }> = [
-    { id: 'refractometer', label: 'Refraktometr' },
-    { id: 'priming', label: 'Butelkowanie' },
-    { id: 'water', label: 'Woda & pH' },
-    { id: 'hydrometer', label: 'Areometr' },
-    { id: 'ibu', label: 'IBU (Tinseth/Rager)' },
-    { id: 'strike', label: 'Woda zacierna' },
-    { id: 'starter', label: 'Starter drożdży' },
-    { id: 'kegging', label: 'Keg & CO2' },
-    { id: 'spunding', label: 'Spunding' },
-    { id: 'hop_aging', label: 'Starzenie chmielu' },
-    { id: 'hop_stand', label: 'Hop Stand / Dip' },
-    { id: 'chiller', label: 'Chłodnica' },
-    { id: 'ispindel', label: 'iSpindel' }
+  const [calcGroup, setCalcGroup] = useState<'core' | 'advanced'>('core');
+
+  const coreTabs: Array<{ id: CalcTab; label: string }> = [
+    { id: 'refractometer', label: t('calc_tab_refractometer') },
+    { id: 'hydrometer', label: t('calc_tab_hydrometer') },
+    { id: 'ibu', label: t('calc_tab_ibu') },
+    { id: 'strike', label: t('calc_tab_strike') },
+    { id: 'priming', label: t('calc_tab_priming') },
+    { id: 'water', label: t('calc_tab_water') },
+    { id: 'starter', label: t('calc_tab_starter') }
   ];
+
+  const advancedTabs: Array<{ id: CalcTab; label: string }> = [
+    { id: 'kegging', label: t('calc_tab_kegging') },
+    { id: 'spunding', label: t('calc_tab_spunding') },
+    { id: 'hop_aging', label: t('calc_tab_hop_aging') },
+    { id: 'hop_stand', label: t('calc_tab_hop_stand') },
+    { id: 'chiller', label: t('calc_tab_chiller') },
+    { id: 'ispindel', label: t('calc_tab_ispindel') }
+  ];
+
+  const visibleTabs = calcGroup === 'core' ? coreTabs : advancedTabs;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <CraftHeader title={t('calc_title')} />
+
+      {/* Progressive Disclosure Group Selector */}
+      <View style={styles.groupToggleContainer}>
+        <TouchableOpacity
+          style={[styles.groupToggleBtn, calcGroup === 'core' && styles.groupToggleBtnActive]}
+          onPress={() => {
+            setCalcGroup('core');
+            if (!coreTabs.some((tab) => tab.id === selectedCalc)) {
+              setSelectedCalc('refractometer');
+            }
+          }}
+        >
+          <Text style={[styles.groupToggleText, calcGroup === 'core' && styles.groupToggleTextActive]}>
+            {t('calc_group_core')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.groupToggleBtn, calcGroup === 'advanced' && styles.groupToggleBtnActive]}
+          onPress={() => {
+            setCalcGroup('advanced');
+            if (!advancedTabs.some((tab) => tab.id === selectedCalc)) {
+              setSelectedCalc('kegging');
+            }
+          }}
+        >
+          <Text style={[styles.groupToggleText, calcGroup === 'advanced' && styles.groupToggleTextActive]}>
+            {t('calc_group_advanced')}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Calculator Selector Tabs */}
       <ScrollView
@@ -263,7 +300,7 @@ export default function CalculatorsScreen() {
         style={styles.tabsScroll}
         contentContainerStyle={styles.tabsContainer}
       >
-        {calcTabs.map((tab) => (
+        {visibleTabs.map((tab) => (
           <TouchableOpacity
             key={tab.id}
             style={[styles.calcPill, selectedCalc === tab.id && styles.calcPillActive]}
@@ -284,11 +321,11 @@ export default function CalculatorsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* 1. Refractometer */}
         {selectedCalc === 'refractometer' && (
-          <CraftCard title={t('calc_refractometer')} subtitle="Algorytm Seana Terrilla z korektą alkoholu">
+          <CraftCard title={t('calc_refractometer')} subtitle={t('calc_refractometer_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Ekstrakt początkowy (OG)"
+                  label={t('calc_label_og')}
                   unit="°Brix"
                   value={refOb}
                   onChangeText={setRefOb}
@@ -297,7 +334,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Odczyt końcowy (FG)"
+                  label={t('calc_label_fg')}
                   unit="°Brix"
                   value={refFb}
                   onChangeText={setRefFb}
@@ -306,7 +343,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Współczynnik (WCF)"
+                  label={t('calc_label_wcf')}
                   unit=""
                   value={refWcf}
                   onChangeText={setRefWcf}
@@ -318,16 +355,16 @@ export default function CalculatorsScreen() {
             <View style={styles.resultBox}>
               <View style={styles.metricRow}>
                 <View style={styles.metric}>
-                  <Text style={styles.metricLabel}>Prawdziwe FG</Text>
+                  <Text style={styles.metricLabel}>{t('calc_result_true_fg')}</Text>
                   <Text style={styles.metricValue}>{refRes.fgSg.toFixed(3)} SG</Text>
                   <Text style={styles.metricSub}>{refRes.fgPlato.toFixed(1)} °Plato</Text>
                 </View>
                 <View style={styles.metric}>
-                  <Text style={styles.metricLabel}>Alkohol</Text>
+                  <Text style={styles.metricLabel}>{t('calc_result_abv')}</Text>
                   <Text style={[styles.metricValue, { color: THEME.colors.primary }]}>
                     {refAbv.toFixed(1)}%
                   </Text>
-                  <Text style={styles.metricSub}>objętościowo</Text>
+                  <Text style={styles.metricSub}>{t('calc_unit_abv_sub')}</Text>
                 </View>
               </View>
             </View>
@@ -336,11 +373,11 @@ export default function CalculatorsScreen() {
 
         {/* 2. Priming & Bottle Bomb Blocker */}
         {selectedCalc === 'priming' && (
-          <CraftCard title={t('calc_priming')} subtitle="Dawkowanie cukru & Bottle Bomb Blocker">
+          <CraftCard title={t('calc_priming')} subtitle={t('calc_priming_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Objętość warki"
+                  label={t('calc_label_beer_vol')}
                   unit="L"
                   value={primeVol}
                   onChangeText={setPrimeVol}
@@ -349,7 +386,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Temp. piwa"
+                  label={t('calc_label_max_temp')}
                   unit="°C"
                   value={primeTemp}
                   onChangeText={setPrimeTemp}
@@ -361,7 +398,7 @@ export default function CalculatorsScreen() {
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Docelowe CO2"
+                  label={t('calc_label_target_vco2')}
                   unit="vol"
                   value={primeTargetVco2}
                   onChangeText={setPrimeTargetVco2}
@@ -405,7 +442,7 @@ export default function CalculatorsScreen() {
             <BottleBombAlert risk={bombRisk} />
 
             <View style={styles.resultBox}>
-              <Text style={styles.metricLabel}>Wymagana gramatura surowca</Text>
+              <Text style={styles.metricLabel}>{t('calc_result_sugar_grams')}</Text>
               <Text style={[styles.metricValueLarge, { color: THEME.colors.primary }]}>
                 {primeRes.grams} g
               </Text>
@@ -418,9 +455,9 @@ export default function CalculatorsScreen() {
 
         {/* 3. Water & pH */}
         {selectedCalc === 'water' && (
-          <CraftCard title={t('calc_water')} subtitle="Mineralizacja wody solami i pH zacieru">
+          <CraftCard title={t('calc_water')} subtitle={t('calc_water_sub')}>
             <CraftInput
-              label="Objętość wody"
+              label={t('calc_label_water_vol')}
               unit="L"
               value={waterVol}
               onChangeText={setWaterVol}
@@ -449,7 +486,7 @@ export default function CalculatorsScreen() {
             </View>
 
             <View style={styles.resultBox}>
-              <Text style={styles.metricLabel}>Stosunek Siarczanów do Chlorków (SO4 / Cl)</Text>
+              <Text style={styles.metricLabel}>{t('calc_result_so4_cl_ratio')}</Text>
               <Text style={[styles.metricValueLarge, { color: THEME.colors.primary }]}>
                 {waterRatio.ratio.toFixed(2)} : 1
               </Text>
@@ -461,7 +498,7 @@ export default function CalculatorsScreen() {
               <View style={styles.row}>
                 <View style={{ flex: 1, marginRight: 8 }}>
                   <CraftInput
-                    label="Aktualne pH"
+                    label={t('calc_label_measured_mash_ph')}
                     unit=""
                     value={mashPhCurrent}
                     onChangeText={setMashPhCurrent}
@@ -470,7 +507,7 @@ export default function CalculatorsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <CraftInput
-                    label="Docelowe pH"
+                    label={t('calc_label_target_mash_ph')}
                     unit=""
                     value={mashPhTarget}
                     onChangeText={setMashPhTarget}
@@ -479,7 +516,7 @@ export default function CalculatorsScreen() {
                 </View>
               </View>
               <View style={styles.resultBox}>
-                <Text style={styles.metricLabel}>Dawka kwasu mlekowego 80%</Text>
+                <Text style={styles.metricLabel}>{t('calc_result_lactic_acid')}</Text>
                 <Text style={[styles.metricValue, { color: THEME.colors.primary }]}>
                   {lacticAcidRes} ml
                 </Text>
@@ -490,9 +527,9 @@ export default function CalculatorsScreen() {
 
         {/* 4. Hydrometer */}
         {selectedCalc === 'hydrometer' && (
-          <CraftCard title={t('calc_hydrometer')} subtitle="Korekta areometru wg krzywej NIST">
+          <CraftCard title={t('calc_hydrometer')} subtitle={t('calc_hydrometer_sub')}>
             <CraftInput
-              label="Odczytana gęstość"
+              label={t('calc_label_measured_sg')}
               unit="SG"
               value={hydSg}
               onChangeText={setHydSg}
@@ -501,7 +538,7 @@ export default function CalculatorsScreen() {
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Temperatura próbki"
+                  label={t('calc_label_sample_temp')}
                   unit="°C"
                   value={hydTemp}
                   onChangeText={setHydTemp}
@@ -510,7 +547,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Temp. kalibracji spławika"
+                  label={t('calc_label_calib_temp')}
                   unit="°C"
                   value={hydCalib}
                   onChangeText={setHydCalib}
@@ -520,7 +557,7 @@ export default function CalculatorsScreen() {
             </View>
 
             <View style={styles.resultBox}>
-              <Text style={styles.metricLabel}>Skorygowana gęstość rzeczywista</Text>
+              <Text style={styles.metricLabel}>{t('calc_result_corrected_sg')}</Text>
               <Text style={[styles.metricValueLarge, { color: THEME.colors.primary }]}>
                 {hydRes.toFixed(3)} SG
               </Text>
@@ -531,7 +568,7 @@ export default function CalculatorsScreen() {
 
         {/* 5. IBU with formula switcher */}
         {selectedCalc === 'ibu' && (
-          <CraftCard title={t('calc_ibu')} subtitle="Modele goryczki chmielowej (Z-008, Z-009)">
+          <CraftCard title={t('calc_ibu')} subtitle={t('calc_ibu_sub')}>
             <View style={styles.sugarSelector}>
               {(['tinseth', 'rager', 'garetz'] as const).map((form) => (
                 <TouchableOpacity
@@ -549,7 +586,7 @@ export default function CalculatorsScreen() {
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Objętość warki"
+                  label={t('calc_label_boil_vol')}
                   unit="L"
                   value={ibuVol}
                   onChangeText={setIbuVol}
@@ -558,7 +595,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Gęstość brzeczki"
+                  label={t('calc_label_boil_gravity')}
                   unit="SG"
                   value={ibuSg}
                   onChangeText={setIbuSg}
@@ -570,7 +607,7 @@ export default function CalculatorsScreen() {
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Waga chmielu"
+                  label={t('calc_label_hop_weight')}
                   unit="g"
                   value={ibuWeight}
                   onChangeText={setIbuWeight}
@@ -579,7 +616,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Alfa-kwasy (AA)"
+                  label={t('calc_label_alpha_acids')}
                   unit="%"
                   value={ibuAlpha}
                   onChangeText={setIbuAlpha}
@@ -588,7 +625,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Czas gotowania"
+                  label={t('calc_label_boil_time')}
                   unit="min"
                   value={ibuMins}
                   onChangeText={setIbuMins}
@@ -598,7 +635,7 @@ export default function CalculatorsScreen() {
             </View>
 
             <View style={styles.resultBox}>
-              <Text style={styles.metricLabel}>Wypadkowa goryczka ({ibuFormula.toUpperCase()})</Text>
+              <Text style={styles.metricLabel}>{t('calc_result_total_ibu')} ({ibuFormula.toUpperCase()})</Text>
               <Text style={[styles.metricValueLarge, { color: THEME.colors.primary }]}>
                 {ibuRes} IBU
               </Text>
@@ -608,11 +645,11 @@ export default function CalculatorsScreen() {
 
         {/* 6. Strike Water */}
         {selectedCalc === 'strike' && (
-          <CraftCard title={t('calc_strike')} subtitle="Termodynamika zasypu słodu wg Johna Palmera">
+          <CraftCard title={t('calc_strike')} subtitle={t('calc_strike_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
-                  label="Docelowa przerwa"
+                  label={t('calc_label_target_mash_temp')}
                   unit="°C"
                   value={strikeMashTarget}
                   onChangeText={setStrikeMashTarget}
@@ -621,7 +658,7 @@ export default function CalculatorsScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <CraftInput
-                  label="Temp. słodu (suchego)"
+                  label={t('calc_label_grain_temp')}
                   unit="°C"
                   value={strikeGrainTemp}
                   onChangeText={setStrikeGrainTemp}
@@ -631,7 +668,7 @@ export default function CalculatorsScreen() {
             </View>
 
             <CraftInput
-              label="Stosunek woda / słód"
+              label={t('calc_label_water_grain_ratio')}
               unit="L/kg"
               value={strikeRatio}
               onChangeText={setStrikeRatio}
@@ -639,12 +676,12 @@ export default function CalculatorsScreen() {
             />
 
             <View style={styles.resultBox}>
-              <Text style={styles.metricLabel}>Woda do infuzji (Strike Water)</Text>
+              <Text style={styles.metricLabel}>{t('calc_result_strike_temp')}</Text>
               <Text style={[styles.metricValueLarge, { color: THEME.colors.primary }]}>
                 {strikeRes.toFixed(1)} °C
               </Text>
               <Text style={styles.metricSub}>
-                Podgrzej wodę w garze do tej temperatury przed wsypaniem słodu.
+                {t('calc_result_strike_sub')}
               </Text>
             </View>
           </CraftCard>
@@ -652,7 +689,7 @@ export default function CalculatorsScreen() {
 
         {/* 7. Yeast Starter (Z-019) */}
         {selectedCalc === 'starter' && (
-          <CraftCard title="Kalkulator Startera Drożdżowego" subtitle="Model namnażania komórek White / Troester (Z-019)">
+          <CraftCard title={t('calc_starter')} subtitle={t('calc_starter_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
@@ -717,7 +754,7 @@ export default function CalculatorsScreen() {
 
         {/* 8. Kegging & CO2 (Z-051) */}
         {selectedCalc === 'kegging' && (
-          <CraftCard title="Kalkulator Kegowania" subtitle="Ciśnienie wysycenia CO2 wg prawa Henry'ego (Z-051)">
+          <CraftCard title={t('calc_kegging')} subtitle={t('calc_kegging_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
@@ -758,7 +795,7 @@ export default function CalculatorsScreen() {
 
         {/* 9. Spunding (Z-052) */}
         {selectedCalc === 'spunding' && (
-          <CraftCard title="Kalkulator Spundingu" subtitle="Naturalne nagazowanie w fermentacji ciśnieniowej (Z-052)">
+          <CraftCard title={t('calc_spunding')} subtitle={t('calc_spunding_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
@@ -801,7 +838,7 @@ export default function CalculatorsScreen() {
 
         {/* 10. Hop Aging (Z-046) */}
         {selectedCalc === 'hop_aging' && (
-          <CraftCard title="Starzenie Chmielu (HSI)" subtitle="Degradacja alfa-kwasów w zależności od warunków (Z-046)">
+          <CraftCard title={t('calc_hop_aging')} subtitle={t('calc_hop_aging_sub')}>
             <View style={styles.row}>
               <View style={{ flex: 1, marginRight: 8 }}>
                 <CraftInput
@@ -857,7 +894,7 @@ export default function CalculatorsScreen() {
 
         {/* 11. Hop Stand / Dip Hopping (Z-050) */}
         {selectedCalc === 'hop_stand' && (
-          <CraftCard title="Hop Stand & Dip Hopping" subtitle="Ekstrakcja olejków eterycznych w 60-85°C (Z-050)">
+          <CraftCard title={t('calc_hop_stand')} subtitle={t('calc_hop_stand_sub')}>
             <View style={styles.sugarSelector}>
               {(['whirlpool', 'hop_stand', 'dip_hopping'] as const).map((tech) => (
                 <TouchableOpacity
@@ -922,7 +959,7 @@ export default function CalculatorsScreen() {
 
         {/* 12. Chiller (Z-053) */}
         {selectedCalc === 'chiller' && (
-          <CraftCard title="Zarządzanie Chłodnicą" subtitle="Wydajność termiczna i zużycie wody lodowej (Z-053)">
+          <CraftCard title={t('calc_chiller')} subtitle={t('calc_chiller_sub')}>
             <View style={styles.sugarSelector}>
               {(['immersion', 'counterflow', 'plate'] as const).map((c) => (
                 <TouchableOpacity
@@ -989,7 +1026,7 @@ export default function CalculatorsScreen() {
 
         {/* 13. iSpindel (Z-025) */}
         {selectedCalc === 'ispindel' && (
-          <CraftCard title="iSpindel — Kalibracja Kąta" subtitle="Wielomianowy przelicznik kąta wychylenia na gęstość (Z-025)">
+          <CraftCard title={t('calc_ispindel')} subtitle={t('calc_ispindel_sub')}>
             <CraftInput
               label="Kąt wychylenia żyroskopu (Tilt Angle)"
               unit="°"
@@ -1018,6 +1055,36 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: THEME.colors.background
+  },
+  groupToggleContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 6,
+    backgroundColor: THEME.colors.surface,
+    borderRadius: 8,
+    padding: 3,
+    borderWidth: 1,
+    borderColor: THEME.colors.border
+  },
+  groupToggleBtn: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: 'center',
+    borderRadius: 6
+  },
+  groupToggleBtnActive: {
+    backgroundColor: THEME.colors.primary,
+    borderColor: THEME.colors.primary
+  },
+  groupToggleText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: THEME.colors.textSecondary
+  },
+  groupToggleTextActive: {
+    color: '#000000',
+    fontWeight: 'bold'
   },
   tabsScroll: {
     maxHeight: 52,

@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     minWidth: 64,
-    minHeight: 44,
+    minHeight: 48,
     justifyContent: 'center'
   },
   cancelText: {

@@ -4,6 +4,7 @@
     "slug": "piwowar",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#101216"
@@ -52,6 +53,7 @@
     "android": {
       "package": "com.apps4craft.piwowar",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#101216"
       },
       "permissions": [

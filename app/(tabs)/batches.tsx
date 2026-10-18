@@ -38,7 +38,7 @@ import { THEME } from '../../lib/theme';
 import { t } from '../../lib/i18n';
 
 export default function BatchesScreen() {
-  const { batches, totalCount, isPro, addNewBatch, removeBatch, toggleProOverride } =
+  const { batches, totalCount, isPro, addNewBatch, removeBatch, toggleProOverride, updateExistingBatch } =
     useBatchStore();
   const { defaultProfile } = useEquipmentStore();
   const { showUndo } = useUndoStore();
@@ -46,6 +46,13 @@ export default function BatchesScreen() {
   const [activeTab, setActiveTab] = useState<'active' | 'all'>('active');
   const [modalVisible, setModalVisible] = useState(false);
   const [newBatchName, setNewBatchName] = useState('');
+
+  // P16 "Jedna Otwarta" inline accordion state
+  const [expandedBatchId, setExpandedBatchId] = useState<string | null>(null);
+  const [editNotes, setEditNotes] = useState('');
+  const [editOg, setEditOg] = useState('');
+  const [editFg, setEditFg] = useState('');
+  const [editStatus, setEditStatus] = useState<BatchStatus>('planning');
 
   // Feature modals
   const [labelBatch, setLabelBatch] = useState<Batch | null>(null);
@@ -56,6 +63,40 @@ export default function BatchesScreen() {
       ? batches.filter((b) => b.status !== 'bottled' && b.status !== 'archived')
       : batches;
 
+  const handleToggleExpand = (batch: Batch) => {
+    if (expandedBatchId === batch.id) {
+      setExpandedBatchId(null);
+    } else {
+      setExpandedBatchId(batch.id);
+      setEditNotes(batch.tasting_notes || '');
+      setEditOg(batch.measured_og_sg ? String(batch.measured_og_sg) : '');
+      setEditFg(batch.measured_fg_sg ? String(batch.measured_fg_sg) : '');
+      setEditStatus(batch.status);
+    }
+  };
+
+  const handleSaveInline = async (batchId: string) => {
+    const db = await openAppDatabase();
+    const ogNum = parseFloat(editOg) || null;
+    const fgNum = parseFloat(editFg) || null;
+    let abvNum: number | null = null;
+    if (ogNum && fgNum && ogNum > fgNum) {
+      abvNum = Number(((ogNum - fgNum) * 131.25).toFixed(1));
+    }
+
+    await updateExistingBatch(db, {
+      id: batchId,
+      tasting_notes: editNotes.trim() || null,
+      measured_og_sg: ogNum,
+      measured_fg_sg: fgNum,
+      calculated_abv: abvNum,
+      status: editStatus
+    });
+
+    setExpandedBatchId(null);
+    showUndo('Zapisano zmiany warki', () => {});
+  };
+
   const handleOpenAdd = () => {
     if (!canStartNewBatch(totalCount, isPro)) {
       Alert.alert(
@@ -63,7 +104,7 @@ export default function BatchesScreen() {
         t('quota_exhausted_desc'),
         [
           { text: 'Zamknij', style: 'cancel' },
-          { text: 'Włącz Apps4Brew Pro', onPress: toggleProOverride }
+          { text: 'Włącz Apps4Brew Pro', onPress: () => { toggleProOverride(); } }
         ]
       );
       return;
@@ -251,66 +292,149 @@ export default function BatchesScreen() {
               <Text style={styles.emptyText}>{t('batches_empty')}</Text>
             </View>
           }
-          renderItem={({ item }) => (
-            <CraftCard>
-              <View style={styles.batchCardHeader}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.batchNumber}>Warka #{item.batch_number}</Text>
-                  <Text style={styles.batchName}>{item.name}</Text>
-                  <Text style={styles.batchDate}>Data warzenia: {item.brew_date}</Text>
-                  {item.parent_batch_id ? (
-                    <Text style={styles.splitBadgeText}>🌿 Część Split-Batch</Text>
-                  ) : null}
+          renderItem={({ item }) => {
+            const isExpanded = expandedBatchId === item.id;
+            return (
+              <CraftCard>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => handleToggleExpand(item)}
+                  style={styles.batchCardHeader}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.batchNumber}>Warka #{item.batch_number}</Text>
+                    <Text style={styles.batchName}>{item.name}</Text>
+                    <Text style={styles.batchDate}>Data warzenia: {item.brew_date}</Text>
+                    {item.parent_batch_id ? (
+                      <Text style={styles.splitBadgeText}>🌿 Część Split-Batch</Text>
+                    ) : null}
+                  </View>
+                  <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                    {renderStatusBadge(item.status)}
+                    <Text style={styles.accordionToggleText}>
+                      {isExpanded ? '▲ Zwiń' : '▼ Edycja / Notatki'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+
+                {/* Inline Accordion "Jedna Otwarta" (P16 pattern) */}
+                {isExpanded && (
+                  <View style={styles.inlineAccordionContent}>
+                    <Text style={styles.inlineSectionTitle}>Szybka Edycja i Notatki (P16 Inline)</Text>
+
+                    {/* Status Switcher */}
+                    <Text style={styles.inlineLabel}>Status warki:</Text>
+                    <View style={styles.statusPillsRow}>
+                      {(['planning', 'mashing', 'boiling', 'fermenting_primary', 'fermenting_secondary', 'cold_crash', 'bottled', 'archived'] as BatchStatus[]).map((st) => (
+                        <TouchableOpacity
+                          key={st}
+                          style={[styles.statusPill, editStatus === st && styles.statusPillActive]}
+                          onPress={() => setEditStatus(st)}
+                        >
+                          <Text style={[styles.statusPillText, editStatus === st && styles.statusPillTextActive]}>
+                            {getStatusLabel(st)}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+
+                    {/* Measurements */}
+                    <View style={styles.inlineRow}>
+                      <View style={{ flex: 1, marginRight: 8 }}>
+                        <CraftInput
+                          label="Zmierzone OG"
+                          unit="SG"
+                          value={editOg}
+                          onChangeText={setEditOg}
+                          placeholder="np. 1.052"
+                          keyboardType="numeric"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <CraftInput
+                          label="Zmierzone FG"
+                          unit="SG"
+                          value={editFg}
+                          onChangeText={setEditFg}
+                          placeholder="np. 1.011"
+                          keyboardType="numeric"
+                        />
+                      </View>
+                    </View>
+
+                    {/* Tasting Notes */}
+                    <CraftInput
+                      label="Notatki i Dziennik Piwowara"
+                      value={editNotes}
+                      onChangeText={setEditNotes}
+                      placeholder="Wprowadź notatki z fermentacji, chmielenia lub degustacji..."
+                    />
+
+                    {/* Inline Save / Close */}
+                    <View style={styles.inlineButtonRow}>
+                      <TouchableOpacity
+                        style={styles.inlineSaveBtn}
+                        onPress={() => handleSaveInline(item.id)}
+                      >
+                        <Text style={styles.inlineSaveBtnText}>💾 Zapisz zmiany w bazie</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.inlineCancelBtn}
+                        onPress={() => setExpandedBatchId(null)}
+                      >
+                        <Text style={styles.inlineCancelBtnText}>Zamknij</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+
+                {/* Action Buttons for v1.1/v1.2 features */}
+                <View style={styles.batchActionRow}>
+                  <TouchableOpacity
+                    style={styles.batchActionBtn}
+                    onPress={() => setLabelBatch(item)}
+                  >
+                    <Text style={styles.batchActionText}>🏷️ {t('batch_action_label')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.batchActionBtn}
+                    onPress={() => handleCalendarExport(item)}
+                  >
+                    <Text style={styles.batchActionText}>📅 {t('batch_action_calendar')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.batchActionBtn}
+                    onPress={() => handleCheckAttenuation(item)}
+                  >
+                    <Text style={styles.batchActionText}>📊 {t('batch_action_attenuation')}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.batchActionBtn}
+                    onPress={() => handleSplitBatch(item)}
+                  >
+                    <Text style={styles.batchActionText}>🔀 {t('batch_action_split')}</Text>
+                  </TouchableOpacity>
                 </View>
-                {renderStatusBadge(item.status)}
-              </View>
 
-              {/* Action Buttons for v1.1/v1.2 features */}
-              <View style={styles.batchActionRow}>
-                <TouchableOpacity
-                  style={styles.batchActionBtn}
-                  onPress={() => setLabelBatch(item)}
-                >
-                  <Text style={styles.batchActionText}>🏷️ {t('batch_action_label')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.batchActionBtn}
-                  onPress={() => handleCalendarExport(item)}
-                >
-                  <Text style={styles.batchActionText}>📅 {t('batch_action_calendar')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.batchActionBtn}
-                  onPress={() => handleCheckAttenuation(item)}
-                >
-                  <Text style={styles.batchActionText}>📊 {t('batch_action_attenuation')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.batchActionBtn}
-                  onPress={() => handleSplitBatch(item)}
-                >
-                  <Text style={styles.batchActionText}>🔀 {t('batch_action_split')}</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.batchFooter}>
-                <Text style={styles.snapshotNotice}>
-                  🔒 Snapshot zamrożony (DEC-15)
-                </Text>
-                <TouchableOpacity
-                  onPress={() => handleDeleteBatch(item)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Usuń warkę ${item.name}`}
-                  style={styles.deleteLink}
-                >
-                  <Text style={styles.deleteText}>Usuń warkę</Text>
-                </TouchableOpacity>
-              </View>
-            </CraftCard>
-          )}
+                <View style={styles.batchFooter}>
+                  <Text style={styles.snapshotNotice}>
+                    🔒 Snapshot zamrożony (DEC-15)
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => handleDeleteBatch(item)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Usuń warkę ${item.name}`}
+                    style={styles.deleteLink}
+                  >
+                    <Text style={styles.deleteText}>Usuń warkę</Text>
+                  </TouchableOpacity>
+                </View>
+              </CraftCard>
+            );
+          }}
         />
       </View>
 
@@ -615,5 +739,108 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: THEME.colors.textSecondary,
     lineHeight: 20
+  },
+  accordionToggleText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: THEME.colors.primary,
+    marginTop: 4
+  },
+  inlineAccordionContent: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: THEME.colors.surface,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: THEME.colors.border
+  },
+  inlineSectionTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: THEME.colors.textPrimary,
+    marginBottom: 8
+  },
+  inlineLabel: {
+    fontSize: 11,
+    color: THEME.colors.textSecondary,
+    marginBottom: 4,
+    textTransform: 'uppercase'
+  },
+  statusPillsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 10
+  },
+  statusPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 4,
+    backgroundColor: THEME.colors.cardBackground,
+    borderWidth: 1,
+    borderColor: THEME.colors.border
+  },
+  statusPillActive: {
+    backgroundColor: THEME.colors.surfaceHover,
+    borderColor: THEME.colors.primary
+  },
+  statusPillText: {
+    fontSize: 11,
+    color: THEME.colors.textSecondary
+  },
+  statusPillTextActive: {
+    color: THEME.colors.primary,
+    fontWeight: 'bold'
+  },
+  inlineRow: {
+    flexDirection: 'row',
+    marginBottom: 6
+  },
+  inlineButtonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10
+  },
+  inlineSaveBtn: {
+    flex: 2,
+    minHeight: 48,
+    backgroundColor: THEME.colors.primary,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inlineSaveBtnText: {
+    color: '#000000',
+    fontWeight: 'bold',
+    fontSize: 13
+  },
+  inlineCancelBtn: {
+    flex: 1,
+    minHeight: 48,
+    backgroundColor: THEME.colors.surface,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inlineCancelBtnText: {
+    color: THEME.colors.textSecondary,
+    fontSize: 13,
+    fontWeight: '600'
   }
 });
+
+function getStatusLabel(status: BatchStatus): string {
+  switch (status) {
+    case 'planning': return 'Planowanie';
+    case 'mashing': return 'Zacieranie';
+    case 'boiling': return 'Gotowanie';
+    case 'fermenting_primary': return 'Burzliwa';
+    case 'fermenting_secondary': return 'Cicha';
+    case 'cold_crash': return 'Cold Crash';
+    case 'bottled': return 'Zabutelkowana';
+    case 'archived': return 'Archiwum';
+    default: return status;
+  }
+}

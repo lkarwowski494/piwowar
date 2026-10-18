@@ -1,9 +1,19 @@
 /**
- * Piwowar (Brewcraft) — Access & Quota Test Suite (DEC-06)
- * Validates Freemium quota (3 free batches) and Pro access transitions.
+ * Piwowar (Brewcraft) — Access & Quota Test Suite (DEC-06 / TASK-R03-01 / TASK-R03-02)
+ * Validates Freemium quota (3 free batches), Pro access transitions, and StoreKit license persistence.
  */
 
 import { getAccessState, canStartNewBatch, FREE_BATCH_LIMIT } from '../lib/access';
+import { createNodeSqliteDatabase } from '../lib/db/adapters/nodeSqliteAdapter';
+import { initDatabase, DatabaseClient } from '../lib/db/database';
+import {
+  IAP_PRODUCTS,
+  loadPersistedLicense,
+  persistProLicense,
+  revokeProLicense,
+  executeStoreKitPurchase
+} from '../lib/iap/storeKitService';
+import { useBatchStore } from '../lib/store/batchStore';
 
 describe('Access & Monetization Quota Suite (DEC-06)', () => {
   it('enforces FREE_BATCH_LIMIT = 3 for new users', () => {
@@ -48,5 +58,58 @@ describe('Access & Monetization Quota Suite (DEC-06)', () => {
     expect(proState.canCreateBatch).toBe(true);
     expect(proState.batchesRemaining).toBe(Infinity);
     expect(canStartNewBatch(10, true)).toBe(true);
+  });
+});
+
+describe('StoreKit License & Persistence Engine (TASK-R03-01 / TASK-R03-02)', () => {
+  let db: DatabaseClient;
+
+  beforeEach(async () => {
+    db = await createNodeSqliteDatabase();
+    await initDatabase(db);
+  });
+
+  it('initializes with non-pro license in fresh database', async () => {
+    const lic = await loadPersistedLicense(db);
+    expect(lic.isPro).toBe(false);
+    expect(lic.productId).toBeNull();
+  });
+
+  it('persists and restores signed Pro license for Annual subscription', async () => {
+    await persistProLicense(db, IAP_PRODUCTS.ANNUAL);
+
+    const lic = await loadPersistedLicense(db);
+    expect(lic.isPro).toBe(true);
+    expect(lic.productId).toBe(IAP_PRODUCTS.ANNUAL);
+    expect(lic.signature).toMatch(/^SIG_/);
+  });
+
+  it('persists and restores signed Pro license for Lifetime purchase', async () => {
+    await executeStoreKitPurchase(db, IAP_PRODUCTS.LIFETIME);
+
+    const lic = await loadPersistedLicense(db);
+    expect(lic.isPro).toBe(true);
+    expect(lic.productId).toBe(IAP_PRODUCTS.LIFETIME);
+    expect(lic.expiresAt).toBeNull(); // Lifetime has no expiry
+  });
+
+  it('allows revoking license on subscription expiration or refund', async () => {
+    await persistProLicense(db, IAP_PRODUCTS.MONTHLY);
+    let lic = await loadPersistedLicense(db);
+    expect(lic.isPro).toBe(true);
+
+    await revokeProLicense(db);
+    lic = await loadPersistedLicense(db);
+    expect(lic.isPro).toBe(false);
+  });
+
+  it('integrates license persistence seamlessly with useBatchStore', async () => {
+    await persistProLicense(db, IAP_PRODUCTS.ANNUAL);
+    await useBatchStore.getState().loadBatches(db);
+    expect(useBatchStore.getState().isPro).toBe(true);
+
+    await revokeProLicense(db);
+    await useBatchStore.getState().restorePurchases(db);
+    expect(useBatchStore.getState().isPro).toBe(false);
   });
 });

@@ -45,7 +45,8 @@ export async function playBrewAlert(type: BrewSoundType): Promise<void> {
           : type === 'chime'
           ? '/sounds/hop_chime.wav'
           : '/sounds/kettle_gong.wav';
-      const audio = new (window as any).Audio(soundFile);
+      const AudioCtor = (window as unknown as { Audio: new (src: string) => { play: () => Promise<void> } }).Audio;
+      const audio = new AudioCtor(soundFile);
       audio.play().catch(() => {});
     }
   } catch (err) {

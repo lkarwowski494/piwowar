@@ -26,6 +26,8 @@ import {
   calculateWaterAdditions,
   calculateSulfateToChlorideRatio,
   calculateLacticAcidAddition,
+  calculateKegPressure,
+  calculateSpundingPressure,
   scaleRecipe
 } from '../lib/brewing';
 import testVectorsRaw from '../docs/brd/fixtures/test-vectors.json';
@@ -129,6 +131,46 @@ describe('Brewing Engine — Deterministic Test Vectors (Tom B1..B6 & C2..C3)', 
           v.sugar_type as 'sucrose' | 'dextrose' | 'dme'
         );
         expect(Math.abs(res.grams - v.expected_grams)).toBeLessThanOrEqual(v.tolerance);
+      });
+    });
+  });
+
+  describe('10. Kegging Force Carbonation Pressure (VEC-KEG-01..02)', () => {
+    (vectors as any).kegging_pressure.forEach((v: any) => {
+      it(`passes vector ${v.id}: ${v.target_vco2} vol at ${v.temp_c}°C -> ${v.expected_psi} PSI / ${v.expected_bar} bar`, () => {
+        const res = calculateKegPressure({
+          targetVco2: v.target_vco2,
+          kegTempC: v.temp_c
+        });
+        expect(Math.abs(res.equilibriumPsi - v.expected_psi)).toBeLessThanOrEqual(v.tolerance_psi);
+        expect(Math.abs(res.equilibriumBar - v.expected_bar)).toBeLessThanOrEqual(v.tolerance_bar);
+      });
+    });
+  });
+
+  describe('11. Spunding Valve Pressure (VEC-SPUND-01..02)', () => {
+    (vectors as any).spunding_pressure.forEach((v: any) => {
+      it(`passes vector ${v.id}: ${v.target_vco2} vol at ${v.fermentation_temp_c}°C -> ${v.expected_bar} bar`, () => {
+        const res = calculateSpundingPressure({
+          targetVco2: v.target_vco2,
+          fermentationTempC: v.fermentation_temp_c,
+          expectedFgSg: v.expected_fg_sg
+        });
+        expect(Math.abs(res.spundingPressureBar - v.expected_bar)).toBeLessThanOrEqual(v.tolerance_bar);
+      });
+    });
+  });
+
+  describe('12. Water Salt Additions (VEC-WATER-01..02)', () => {
+    (vectors as any).water_additions.forEach((v: any) => {
+      it(`passes vector ${v.id}: ${v.water_volume_l}L with gypsum ${v.gypsum_g}g, cacl2 ${v.cacl2_g}g`, () => {
+        const profile = calculateWaterAdditions(v.water_volume_l, {
+          gypsumGrams: v.gypsum_g,
+          calciumChlorideGrams: v.cacl2_g
+        });
+        expect(Math.abs(profile.ca - v.expected_ca)).toBeLessThanOrEqual(v.tolerance);
+        expect(Math.abs(profile.so4 - v.expected_so4)).toBeLessThanOrEqual(v.tolerance);
+        expect(Math.abs(profile.cl - v.expected_cl)).toBeLessThanOrEqual(v.tolerance);
       });
     });
   });

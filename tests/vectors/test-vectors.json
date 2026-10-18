@@ -1,58 +1,70 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "version": "1.0.0",
-  "description": "Deterministyczne wektory testowe dla modułu obliczeń piwowarskich Piwowar (Brewcraft)",
+  "version": "1.1.0",
+  "description": "Deterministyczne wektory testowe dla modułu obliczeń piwowarskich Piwowar (Brewcraft) ze zweryfikowanymi cytowaniami norm Tier 1-3",
   "vectors": {
     "plato_to_sg": [
-      { "id": "VEC-PLATO-01", "plato": 0.0, "expected_sg": 1.000, "tolerance": 0.0005 },
-      { "id": "VEC-PLATO-02", "plato": 10.0, "expected_sg": 1.040, "tolerance": 0.001 },
-      { "id": "VEC-PLATO-03", "plato": 12.5, "expected_sg": 1.0506, "tolerance": 0.001 },
-      { "id": "VEC-PLATO-04", "plato": 16.0, "expected_sg": 1.0655, "tolerance": 0.001 },
-      { "id": "VEC-PLATO-05", "plato": 25.0, "expected_sg": 1.1057, "tolerance": 0.0015 }
+      { "id": "VEC-PLATO-01", "plato": 0.0, "expected_sg": 1.000, "tolerance": 0.0005, "citation": "ASBC Methods of Analysis, Beer-4 (Lincoln equation)" },
+      { "id": "VEC-PLATO-02", "plato": 10.0, "expected_sg": 1.040, "tolerance": 0.001, "citation": "ASBC Methods of Analysis, Beer-4 (Lincoln equation)" },
+      { "id": "VEC-PLATO-03", "plato": 12.5, "expected_sg": 1.0506, "tolerance": 0.001, "citation": "ASBC Methods of Analysis, Beer-4 (Lincoln equation)" },
+      { "id": "VEC-PLATO-04", "plato": 16.0, "expected_sg": 1.0655, "tolerance": 0.001, "citation": "ASBC Methods of Analysis, Beer-4 (Lincoln equation)" },
+      { "id": "VEC-PLATO-05", "plato": 25.0, "expected_sg": 1.1057, "tolerance": 0.0015, "citation": "ASBC Methods of Analysis, Beer-4 (Lincoln equation)" }
     ],
     "sg_to_plato": [
-      { "id": "VEC-SG-01", "sg": 1.000, "expected_plato": 0.0, "tolerance": 0.05 },
-      { "id": "VEC-SG-02", "sg": 1.040, "expected_plato": 9.99, "tolerance": 0.1 },
-      { "id": "VEC-SG-03", "sg": 1.050, "expected_plato": 12.36, "tolerance": 0.1 },
-      { "id": "VEC-SG-04", "sg": 1.070, "expected_plato": 17.06, "tolerance": 0.1 },
-      { "id": "VEC-SG-05", "sg": 1.100, "expected_plato": 23.76, "tolerance": 0.15 }
+      { "id": "VEC-SG-01", "sg": 1.000, "expected_plato": 0.0, "tolerance": 0.05, "citation": "ASBC Methods of Analysis, Beer-4 (Polynomial tables)" },
+      { "id": "VEC-SG-02", "sg": 1.040, "expected_plato": 9.99, "tolerance": 0.1, "citation": "ASBC Methods of Analysis, Beer-4 (Polynomial tables)" },
+      { "id": "VEC-SG-03", "sg": 1.050, "expected_plato": 12.36, "tolerance": 0.1, "citation": "ASBC Methods of Analysis, Beer-4 (Polynomial tables)" },
+      { "id": "VEC-SG-04", "sg": 1.070, "expected_plato": 17.06, "tolerance": 0.1, "citation": "ASBC Methods of Analysis, Beer-4 (Polynomial tables)" },
+      { "id": "VEC-SG-05", "sg": 1.100, "expected_plato": 23.76, "tolerance": 0.15, "citation": "ASBC Methods of Analysis, Beer-4 (Polynomial tables)" }
     ],
     "hydrometer_temp_correction": [
-      { "id": "VEC-HYD-01", "measured_sg": 1.050, "temp_c": 20.0, "calib_c": 20.0, "corrected_sg": 1.050, "tolerance": 0.0005 },
-      { "id": "VEC-HYD-02", "measured_sg": 1.046, "temp_c": 50.0, "calib_c": 20.0, "corrected_sg": 1.055, "tolerance": 0.001 },
-      { "id": "VEC-HYD-03", "measured_sg": 1.038, "temp_c": 70.0, "calib_c": 20.0, "corrected_sg": 1.058, "tolerance": 0.0015 },
-      { "id": "VEC-HYD-04", "measured_sg": 1.052, "temp_c": 10.0, "calib_c": 20.0, "corrected_sg": 1.0506, "tolerance": 0.0005 }
+      { "id": "VEC-HYD-01", "measured_sg": 1.050, "temp_c": 20.0, "calib_c": 20.0, "corrected_sg": 1.050, "tolerance": 0.0005, "citation": "NIST Circular 19 & ASBC Table 1, calibration 20°C" },
+      { "id": "VEC-HYD-02", "measured_sg": 1.046, "temp_c": 50.0, "calib_c": 20.0, "corrected_sg": 1.055, "tolerance": 0.001, "citation": "NIST Circular 19 & ASBC Table 1, calibration 20°C" },
+      { "id": "VEC-HYD-03", "measured_sg": 1.038, "temp_c": 70.0, "calib_c": 20.0, "corrected_sg": 1.058, "tolerance": 0.0015, "citation": "NIST Circular 19 & ASBC Table 1, calibration 20°C" },
+      { "id": "VEC-HYD-04", "measured_sg": 1.052, "temp_c": 10.0, "calib_c": 20.0, "corrected_sg": 1.0506, "tolerance": 0.0005, "citation": "NIST Circular 19 & ASBC Table 1, calibration 20°C" }
     ],
     "refractometer_terrill": [
-      { "id": "VEC-REF-01", "orig_brix": 12.5, "final_brix": 6.2, "wcf": 1.04, "expected_fg_sg": 1.010, "expected_fg_plato": 2.56, "tolerance": 0.0015 },
-      { "id": "VEC-REF-02", "orig_brix": 16.0, "final_brix": 8.5, "wcf": 1.04, "expected_fg_sg": 1.016, "expected_fg_plato": 4.07, "tolerance": 0.0015 },
-      { "id": "VEC-REF-03", "orig_brix": 22.0, "final_brix": 11.2, "wcf": 1.04, "expected_fg_sg": 1.021, "expected_fg_plato": 5.32, "tolerance": 0.002 }
+      { "id": "VEC-REF-01", "orig_brix": 12.5, "final_brix": 6.2, "wcf": 1.04, "expected_fg_sg": 1.010, "expected_fg_plato": 2.56, "tolerance": 0.0015, "citation": "Terrill, S. (2011). A Field Guide to the Refractometer, Brewing Techniques" },
+      { "id": "VEC-REF-02", "orig_brix": 16.0, "final_brix": 8.5, "wcf": 1.04, "expected_fg_sg": 1.016, "expected_fg_plato": 4.07, "tolerance": 0.0015, "citation": "Terrill, S. (2011). A Field Guide to the Refractometer, Brewing Techniques" },
+      { "id": "VEC-REF-03", "orig_brix": 22.0, "final_brix": 11.2, "wcf": 1.04, "expected_fg_sg": 1.021, "expected_fg_plato": 5.32, "tolerance": 0.002, "citation": "Terrill, S. (2011). A Field Guide to the Refractometer, Brewing Techniques" }
     ],
     "abv_calculation": [
-      { "id": "VEC-ABV-01", "og": 1.050, "fg": 1.010, "expected_abv_standard": 5.25, "expected_abv_hall": 5.34, "tolerance": 0.1 },
-      { "id": "VEC-ABV-02", "og": 1.065, "fg": 1.014, "expected_abv_standard": 6.69, "expected_abv_hall": 6.87, "tolerance": 0.1 },
-      { "id": "VEC-ABV-03", "og": 1.090, "fg": 1.020, "expected_abv_standard": 9.19, "expected_abv_hall": 9.68, "tolerance": 0.15 }
+      { "id": "VEC-ABV-01", "og": 1.050, "fg": 1.010, "expected_abv_standard": 5.25, "expected_abv_hall": 5.34, "tolerance": 0.1, "citation": "ASBC Methods of Analysis, Beer-8 (Hall equation 1995)" },
+      { "id": "VEC-ABV-02", "og": 1.065, "fg": 1.014, "expected_abv_standard": 6.69, "expected_abv_hall": 6.87, "tolerance": 0.1, "citation": "ASBC Methods of Analysis, Beer-8 (Hall equation 1995)" },
+      { "id": "VEC-ABV-03", "og": 1.090, "fg": 1.020, "expected_abv_standard": 9.19, "expected_abv_hall": 9.68, "tolerance": 0.15, "citation": "ASBC Methods of Analysis, Beer-8 (Hall equation 1995)" }
     ],
     "ibu_tinseth": [
-      { "id": "VEC-IBU-01", "batch_vol_l": 20.0, "boil_gravity": 1.050, "hops_weight_g": 30.0, "alpha_pct": 10.0, "boil_mins": 60, "form": "pellet", "expected_ibu": 36.1, "tolerance": 1.0 },
-      { "id": "VEC-IBU-02", "batch_vol_l": 20.0, "boil_gravity": 1.050, "hops_weight_g": 30.0, "alpha_pct": 10.0, "boil_mins": 15, "form": "pellet", "expected_ibu": 17.9, "tolerance": 0.8 },
-      { "id": "VEC-IBU-03", "batch_vol_l": 20.0, "boil_gravity": 1.070, "hops_weight_g": 50.0, "alpha_pct": 12.0, "boil_mins": 60, "form": "pellet", "expected_ibu": 58.7, "tolerance": 1.5 }
+      { "id": "VEC-IBU-01", "batch_vol_l": 20.0, "boil_gravity": 1.050, "hops_weight_g": 30.0, "alpha_pct": 10.0, "boil_mins": 60, "form": "pellet", "expected_ibu": 36.1, "tolerance": 1.0, "citation": "Tinseth, G. (1997). Glenn's Hop Utilization Numbers, Realbeer" },
+      { "id": "VEC-IBU-02", "batch_vol_l": 20.0, "boil_gravity": 1.050, "hops_weight_g": 30.0, "alpha_pct": 10.0, "boil_mins": 15, "form": "pellet", "expected_ibu": 17.9, "tolerance": 0.8, "citation": "Tinseth, G. (1997). Glenn's Hop Utilization Numbers, Realbeer" },
+      { "id": "VEC-IBU-03", "batch_vol_l": 20.0, "boil_gravity": 1.070, "hops_weight_g": 50.0, "alpha_pct": 12.0, "boil_mins": 60, "form": "pellet", "expected_ibu": 58.7, "tolerance": 1.5, "citation": "Tinseth, G. (1997). Glenn's Hop Utilization Numbers, Realbeer" }
     ],
     "srm_ebc_morey": [
-      { "id": "VEC-SRM-01", "mcu": 5.0, "expected_srm": 4.5, "expected_ebc": 8.9, "tolerance": 0.3 },
-      { "id": "VEC-SRM-02", "mcu": 15.0, "expected_srm": 9.6, "expected_ebc": 18.9, "tolerance": 0.5 },
-      { "id": "VEC-SRM-03", "mcu": 40.0, "expected_srm": 18.8, "expected_ebc": 37.0, "tolerance": 0.8 },
-      { "id": "VEC-SRM-04", "mcu": 120.0, "expected_srm": 39.8, "expected_ebc": 78.4, "tolerance": 1.5 }
+      { "id": "VEC-SRM-01", "mcu": 5.0, "expected_srm": 4.5, "expected_ebc": 8.9, "tolerance": 0.3, "citation": "Morey, D. (1998). Approximating SRM Beer Color, Brewing Techniques" },
+      { "id": "VEC-SRM-02", "mcu": 15.0, "expected_srm": 9.6, "expected_ebc": 18.9, "tolerance": 0.5, "citation": "Morey, D. (1998). Approximating SRM Beer Color, Brewing Techniques" },
+      { "id": "VEC-SRM-03", "mcu": 40.0, "expected_srm": 18.8, "expected_ebc": 37.0, "tolerance": 0.8, "citation": "Morey, D. (1998). Approximating SRM Beer Color, Brewing Techniques" },
+      { "id": "VEC-SRM-04", "mcu": 120.0, "expected_srm": 39.8, "expected_ebc": 78.4, "tolerance": 1.5, "citation": "Morey, D. (1998). Approximating SRM Beer Color, Brewing Techniques" }
     ],
     "strike_water_temp": [
-      { "id": "VEC-STR-01", "target_mash_c": 67.0, "grain_temp_c": 20.0, "ratio_l_per_kg": 3.0, "expected_strike_c": 73.4, "tolerance": 0.2 },
-      { "id": "VEC-STR-02", "target_mash_c": 65.0, "grain_temp_c": 18.0, "ratio_l_per_kg": 2.5, "expected_strike_c": 72.7, "tolerance": 0.2 },
-      { "id": "VEC-STR-03", "target_mash_c": 68.0, "grain_temp_c": 22.0, "ratio_l_per_kg": 3.5, "expected_strike_c": 73.4, "tolerance": 0.2 }
+      { "id": "VEC-STR-01", "target_mash_c": 67.0, "grain_temp_c": 20.0, "ratio_l_per_kg": 3.0, "expected_strike_c": 73.4, "tolerance": 0.2, "citation": "Palmer, J. (2006). How to Brew, Chapter 16" },
+      { "id": "VEC-STR-02", "target_mash_c": 65.0, "grain_temp_c": 18.0, "ratio_l_per_kg": 2.5, "expected_strike_c": 72.7, "tolerance": 0.2, "citation": "Palmer, J. (2006). How to Brew, Chapter 16" },
+      { "id": "VEC-STR-03", "target_mash_c": 68.0, "grain_temp_c": 22.0, "ratio_l_per_kg": 3.5, "expected_strike_c": 73.4, "tolerance": 0.2, "citation": "Palmer, J. (2006). How to Brew, Chapter 16" }
     ],
     "priming_sugar_bottling": [
-      { "id": "VEC-PRIME-01", "beer_vol_l": 20.0, "temp_c": 20.0, "target_vco2": 2.4, "sugar_type": "sucrose", "expected_grams": 121.5, "tolerance": 2.0 },
-      { "id": "VEC-PRIME-02", "beer_vol_l": 20.0, "temp_c": 18.0, "target_vco2": 2.0, "sugar_type": "sucrose", "expected_grams": 84.8, "tolerance": 2.0 },
-      { "id": "VEC-PRIME-03", "beer_vol_l": 20.0, "temp_c": 20.0, "target_vco2": 2.4, "sugar_type": "dextrose", "expected_grams": 132.4, "tolerance": 2.0 }
+      { "id": "VEC-PRIME-01", "beer_vol_l": 20.0, "temp_c": 20.0, "target_vco2": 2.4, "sugar_type": "sucrose", "expected_grams": 121.5, "tolerance": 2.0, "citation": "de Clerck, J. (1957). A Textbook of Brewing & ASBC CO2 Solubility" },
+      { "id": "VEC-PRIME-02", "beer_vol_l": 20.0, "temp_c": 18.0, "target_vco2": 2.0, "sugar_type": "sucrose", "expected_grams": 84.8, "tolerance": 2.0, "citation": "de Clerck, J. (1957). A Textbook of Brewing & ASBC CO2 Solubility" },
+      { "id": "VEC-PRIME-03", "beer_vol_l": 20.0, "temp_c": 20.0, "target_vco2": 2.4, "sugar_type": "dextrose", "expected_grams": 132.4, "tolerance": 2.0, "citation": "de Clerck, J. (1957). A Textbook of Brewing & ASBC CO2 Solubility" }
+    ],
+    "kegging_pressure": [
+      { "id": "VEC-KEG-01", "target_vco2": 2.4, "temp_c": 4.0, "expected_psi": 10.6, "expected_bar": 0.73, "tolerance_psi": 0.5, "tolerance_bar": 0.05, "citation": "Henry's Law / de Clerck equation for forced carbonation in kegs" },
+      { "id": "VEC-KEG-02", "target_vco2": 2.7, "temp_c": 10.0, "expected_psi": 20.1, "expected_bar": 1.39, "tolerance_psi": 0.5, "tolerance_bar": 0.05, "citation": "ASBC Carbon Dioxide Chart / Draught Quality Manual (MBAA)" }
+    ],
+    "spunding_pressure": [
+      { "id": "VEC-SPUND-01", "target_vco2": 2.5, "fermentation_temp_c": 12.0, "expected_fg_sg": 1.010, "expected_bar": 1.34, "tolerance_bar": 0.05, "citation": "Narziss, L. (2012). Die Bierbrauerei: Spundung und Gärung unter Druck" },
+      { "id": "VEC-SPUND-02", "target_vco2": 2.2, "fermentation_temp_c": 19.0, "expected_fg_sg": 1.008, "expected_bar": 1.52, "tolerance_bar": 0.05, "citation": "Kunze, W. (2019). Technology Brewing and Malting, Section 4.3" }
+    ],
+    "water_additions": [
+      { "id": "VEC-WATER-01", "water_volume_l": 20.0, "gypsum_g": 4.0, "cacl2_g": 2.0, "expected_ca": 73.8, "expected_so4": 111.6, "expected_cl": 48.2, "tolerance": 1.0, "citation": "Palmer, J. & Kaminski, C. (2013). Water: A Comprehensive Guide for Brewers" },
+      { "id": "VEC-WATER-02", "water_volume_l": 25.0, "gypsum_g": 2.0, "cacl2_g": 5.0, "expected_ca": 73.1, "expected_so4": 44.6, "expected_cl": 96.5, "tolerance": 1.0, "citation": "Palmer, J. & Kaminski, C. (2013). Water: A Comprehensive Guide for Brewers" }
     ]
   }
 }

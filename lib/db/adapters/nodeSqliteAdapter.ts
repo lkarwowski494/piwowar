@@ -6,34 +6,35 @@
 import { DatabaseSync } from 'node:sqlite';
 import { DatabaseClient, SQLiteRunResult } from '../database';
 
-function sanitizeParams(params: any[]): any[] {
-  const flattened = params.length === 1 && Array.isArray(params[0]) ? params[0] : params;
+function sanitizeParams(params: unknown[]): unknown[] {
+  const flattened = params.length === 1 && Array.isArray(params[0]) ? (params[0] as unknown[]) : params;
   return flattened.map((p) => (p === undefined ? null : p));
 }
 
 export function createNodeSqliteDatabase(path: string = ':memory:'): DatabaseClient {
   const db = new DatabaseSync(path);
   db.exec('PRAGMA foreign_keys = ON;');
+  db.exec('PRAGMA busy_timeout = 5000;');
 
   return {
     async execAsync(sql: string): Promise<void> {
       db.exec(sql);
     },
-    async runAsync(sql: string, ...params: any[]): Promise<SQLiteRunResult> {
+    async runAsync(sql: string, ...params: unknown[]): Promise<SQLiteRunResult> {
       const stmt = db.prepare(sql);
-      const res = stmt.run(...sanitizeParams(params));
+      const res = (stmt.run as (...args: unknown[]) => { lastInsertRowid: number | bigint; changes: number | bigint })(...sanitizeParams(params));
       return {
         lastInsertRowId: Number(res.lastInsertRowid),
         changes: Number(res.changes)
       };
     },
-    async getAllAsync<T = any>(sql: string, ...params: any[]): Promise<T[]> {
+    async getAllAsync<T = unknown>(sql: string, ...params: unknown[]): Promise<T[]> {
       const stmt = db.prepare(sql);
-      return stmt.all(...sanitizeParams(params)) as T[];
+      return (stmt.all as (...args: unknown[]) => unknown[])(...sanitizeParams(params)) as T[];
     },
-    async getFirstAsync<T = any>(sql: string, ...params: any[]): Promise<T | null> {
+    async getFirstAsync<T = unknown>(sql: string, ...params: unknown[]): Promise<T | null> {
       const stmt = db.prepare(sql);
-      const res = stmt.get(...sanitizeParams(params));
+      const res = (stmt.get as (...args: unknown[]) => unknown)(...sanitizeParams(params));
       return (res ?? null) as T | null;
     },
     async withTransactionAsync<T>(task: () => Promise<T>): Promise<T> {

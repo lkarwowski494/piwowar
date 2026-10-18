@@ -64,7 +64,7 @@ export default function BrewScreen() {
 
   // Ticking timer
   useEffect(() => {
-    let timer: any = null;
+    let timer: ReturnType<typeof setInterval> | null = null;
     if (isRunning) {
       if (Platform.OS !== 'web') {
         activateKeepAwakeAsync().catch(() => {});

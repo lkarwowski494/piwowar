@@ -1,0 +1,115 @@
+{
+  "identifier" : "33C92B45",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : true,
+      "internalID" : "PIWOWAR_LIFETIME_01",
+      "localizations" : [
+        {
+          "description" : "Dożywotni dostęp do Piwowar Pro i modułów IoT",
+          "displayName" : "Piwowar Pro Lifetime",
+          "locale" : "pl"
+        },
+        {
+          "description" : "Lifetime access to Brewcraft Pro and IoT tools",
+          "displayName" : "Brewcraft Pro Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.apps4craft.piwowar.pass.lifetime",
+      "referenceName" : "Brewcraft Pro Lifetime",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "pl",
+    "_storefront" : "POL",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "PIWOWAR_PASS_GROUP",
+      "localizations" : [
+        {
+          "description" : "Apps4Brew Pass Pro Subscriptions",
+          "displayName" : "Apps4Brew Pass",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "Apps4Brew Pass",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : true,
+          "groupNumber" : 2,
+          "internalID" : "PIWOWAR_MONTHLY_01",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Miesięczny dostęp do tworzenia warek i odczytów Tilt BLE",
+              "displayName" : "Apps4Brew Pass Miesięczny",
+              "locale" : "pl"
+            },
+            {
+              "description" : "Monthly batch creation and Tilt BLE monitoring",
+              "displayName" : "Apps4Brew Pass Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.apps4craft.piwowar.pass.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Apps4Brew Pass Monthly",
+          "subscriptionGroupID" : "PIWOWAR_PASS_GROUP",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "PIWOWAR_ANNUAL_01",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Roczny dostęp do Piwowar Pro (Mniej niż jedno piwo rocznie)",
+              "displayName" : "Apps4Brew Pass Roczny",
+              "locale" : "pl"
+            },
+            {
+              "description" : "Annual access to Brewcraft Pro (Cheaper than a craft beer)",
+              "displayName" : "Apps4Brew Pass Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.apps4craft.piwowar.pass.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Apps4Brew Pass Annual",
+          "subscriptionGroupID" : "PIWOWAR_PASS_GROUP",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

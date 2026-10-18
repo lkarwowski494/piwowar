@@ -77,6 +77,8 @@ const translations = {
     quota_exhausted_desc: "Your historical batches, Tilt graphs, and notes remain 100% accessible in read-only mode forever. Unlock Apps4Brew Pass to brew new batches.",
     quota_upgrade_action: "Unlock Apps4Brew Pass",
     calc_title: "Brewing Calculators",
+    calc_group_core: "Brew Day Core",
+    calc_group_advanced: "Brew Lab (v2.0)",
     calc_refractometer: "Refractometer (Terrill)",
     calc_hydrometer: "Hydrometer (NIST)",
     calc_ibu: "Bitterness IBU (Tinseth)",
@@ -84,6 +86,73 @@ const translations = {
     calc_strike: "Strike Water (Palmer)",
     calc_priming: "Bottle Priming",
     calc_water: "Water Chemistry & Salts",
+    calc_starter: "Yeast Starter (Zainasheff)",
+    calc_kegging: "Kegging & CO2 (Henry)",
+    calc_spunding: "Spunding & Pressure",
+    calc_hop_aging: "Hop Aging (HSI)",
+    calc_hop_stand: "Hop Stand & Dip Hop",
+    calc_chiller: "Chiller Efficiency",
+    calc_ispindel: "iSpindel Calibration",
+    calc_tab_refractometer: "Refractometer",
+    calc_tab_priming: "Bottling",
+    calc_tab_water: "Water & pH",
+    calc_tab_hydrometer: "Hydrometer",
+    calc_tab_ibu: "IBU Bitterness",
+    calc_tab_strike: "Strike Water",
+    calc_tab_starter: "Yeast Starter",
+    calc_tab_kegging: "Keg & CO2",
+    calc_tab_spunding: "Spunding",
+    calc_tab_hop_aging: "Hop Aging",
+    calc_tab_hop_stand: "Hop Stand / Dip",
+    calc_tab_chiller: "Chiller",
+    calc_tab_ispindel: "iSpindel",
+    calc_refractometer_sub: "Sean Terrill formula with alcohol correction",
+    calc_label_og: "Original Gravity (OG)",
+    calc_label_fg: "Final Reading (FG)",
+    calc_label_wcf: "Wort Correction (WCF)",
+    calc_result_true_fg: "True Final Gravity",
+    calc_result_abv: "Alcohol",
+    calc_unit_abv_sub: "by volume",
+    calc_priming_sub: "Sugar dosing & Bottle Bomb Blocker",
+    calc_label_beer_vol: "Beer Volume",
+    calc_label_max_temp: "Highest Fermentation Temp",
+    calc_label_target_vco2: "Target Carbonation (vol CO2)",
+    calc_label_sugar_type: "Sugar Type",
+    calc_result_sugar_grams: "Sugar Dose",
+    calc_result_per_bottle: "Per 0.5L Bottle",
+    calc_result_residual_co2: "Residual CO2",
+    calc_water_sub: "Water mineral adjustment & lactic acid",
+    calc_label_water_vol: "Water Volume",
+    calc_label_target_mash_ph: "Target Mash pH",
+    calc_label_measured_mash_ph: "Measured Mash pH",
+    calc_result_lactic_acid: "Lactic Acid 80%",
+    calc_result_so4_cl_ratio: "SO4 / Cl Ratio",
+    calc_hydrometer_sub: "Temperature correction per NIST standard",
+    calc_label_measured_sg: "Measured Hydrometer Reading",
+    calc_label_sample_temp: "Sample Temperature",
+    calc_label_calib_temp: "Calibration Temperature",
+    calc_result_corrected_sg: "Corrected SG",
+    calc_ibu_sub: "Tinseth / Rager / Garetz isomerization formula",
+    calc_label_boil_vol: "Boil Volume",
+    calc_label_boil_gravity: "Wort Gravity (SG)",
+    calc_label_hop_weight: "Hop Weight",
+    calc_label_alpha_acids: "Alpha Acids (% AA)",
+    calc_label_boil_time: "Boil Time",
+    calc_label_hop_form: "Hop Form",
+    calc_result_total_ibu: "Calculated Bitterness",
+    calc_strike_sub: "Strike water temperature (Palmer)",
+    calc_label_target_mash_temp: "Target Mash Temp",
+    calc_label_grain_temp: "Grain Temp",
+    calc_label_water_grain_ratio: "Water-to-Grain Ratio",
+    calc_result_strike_temp: "Strike Water Temp",
+    calc_result_strike_sub: "mash will stabilize at target temperature",
+    calc_starter_sub: "Cell density and starter volume calculator",
+    calc_kegging_sub: "Henry's Law CO2 equilibrium pressure",
+    calc_spunding_sub: "Natural carbonation under pressure",
+    calc_hop_aging_sub: "Alpha acid loss during storage",
+    calc_hop_stand_sub: "Hop oils extraction & whirlpool isomerization",
+    calc_chiller_sub: "Chilling time and water consumption",
+    calc_ispindel_sub: "Polynomial tilt angle calibration",
     bottle_bomb_blocker_title: "Bottle Bomb Blocker",
     bottle_bomb_danger_header: "STOP! DO NOT BOTTLE!",
     bottle_bomb_safe_message: "Fermentation and priming parameters are within safe limits.",
@@ -91,7 +160,13 @@ const translations = {
     settings_equipment: "Equipment Profiles (DEC-11)",
     settings_bjcp: "BJCP 2021 Styles (Offline)",
     settings_about: "About Piwowar",
-    settings_version: "Version 1.0.0 (Apps4Craft Studio)"
+    settings_version: "Version 1.0.0 (Apps4Craft Studio)",
+    batch_action_label: "Label & QR",
+    batch_action_calendar: "Calendar (.ics)",
+    batch_action_split: "Split Batch",
+    batch_action_attenuation: "Attenuation Analysis",
+    recipe_action_qr: "Share QR (P2P)",
+    settings_inventory: "Pantry & Ingredients Inventory"
   },
   de: {
     app_name: "Piwowar (Brewcraft)",
@@ -263,11 +338,19 @@ const ALL_CODES = [
 
 // Helper to fill other languages gracefully based on English blueprint while adapting key terms
 function getLanguageData(code) {
-  if (translations[code]) {
-    return translations[code];
+  if (code === 'pl') {
+    return { ...source };
   }
   // Base from English blueprint ensuring 100% key and parameter symmetry
-  const base = { ...translations.en };
+  const custom = translations[code] || {};
+  let disk = {};
+  const targetFile = path.resolve(localesDir, `${code}.json`);
+  if (fs.existsSync(targetFile)) {
+    try {
+      disk = JSON.parse(fs.readFileSync(targetFile, 'utf8'));
+    } catch (e) {}
+  }
+  const base = { ...translations.en, ...disk, ...custom };
   // Customize tagline or specific craft title per language
   if (code === 'fr') {
     base.app_tagline = "Assistant pour brasseurs amateurs et artisanaux";

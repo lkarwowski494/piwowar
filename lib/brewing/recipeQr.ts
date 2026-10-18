@@ -111,8 +111,8 @@ export function decodeRecipeFromQrPayload(payloadOrUrl: string): FullRecipe | nu
       weight_g: h.w,
       alpha_acids_pct: h.a,
       boil_time_mins: h.t,
-      use_stage: (h.s as any) || 'boil',
-      form: (h.f as any) || 'pellet',
+      use_stage: (h.s as RecipeHop['use_stage']) || 'boil',
+      form: (h.f as RecipeHop['form']) || 'pellet',
       sort_order: idx
     }));
 

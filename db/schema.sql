@@ -2,6 +2,7 @@
 -- Zgodny z Tomem D2 BRD v0.1
 
 PRAGMA journal_mode = WAL;
+PRAGMA busy_timeout = 5000;
 PRAGMA foreign_keys = ON;
 
 -- 1. Style Piwne BJCP 2021 (Tabela referencyjna offline)

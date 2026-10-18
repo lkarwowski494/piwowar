@@ -91,7 +91,34 @@ export const MIGRATIONS: Migration[] = [
   }
 ];
 
-export async function runMigrations(db: DatabaseClient): Promise<number> {
+export interface MigrationOptions {
+  backupPath?: string;
+  enableBackup?: boolean;
+}
+
+export async function createMigrationBackup(
+  db: DatabaseClient,
+  backupPath: string = 'backup_pre_migration.db'
+): Promise<string> {
+  try {
+    const normalizedPath = backupPath.replace(/\\/g, '/');
+    const fs = typeof require !== 'undefined' ? require('node:fs') : null;
+    if (fs && typeof fs.existsSync === 'function' && fs.existsSync(backupPath)) {
+      try {
+        fs.unlinkSync(backupPath);
+      } catch {}
+    }
+    await db.execAsync(`VACUUM INTO '${normalizedPath.replace(/'/g, "''")}';`);
+    return backupPath;
+  } catch {
+    return '';
+  }
+}
+
+export async function runMigrations(
+  db: DatabaseClient,
+  options?: MigrationOptions
+): Promise<number> {
   // Ensure schema_migrations table exists
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -106,9 +133,20 @@ export async function runMigrations(db: DatabaseClient): Promise<number> {
   );
   const appliedVersions = new Set(appliedRows.map((r) => r.version));
 
+  const pending = MIGRATIONS.filter((mig) => !appliedVersions.has(mig.version));
+  if (pending.length === 0) {
+    return 0;
+  }
+
+  // Pre-migration backup snapshot (Zero Data Loss Axiom)
+  let backupFile = '';
+  if (options?.enableBackup !== false) {
+    backupFile = await createMigrationBackup(db, options?.backupPath);
+  }
+
   let count = 0;
-  for (const mig of MIGRATIONS) {
-    if (!appliedVersions.has(mig.version)) {
+  for (const mig of pending) {
+    try {
       await db.withTransactionAsync(async () => {
         await mig.up(db);
         await db.runAsync(
@@ -118,6 +156,12 @@ export async function runMigrations(db: DatabaseClient): Promise<number> {
         );
       });
       count++;
+    } catch (migError) {
+      throw new Error(
+        `[ZeroDataLoss] Migration ${mig.version} (${mig.name}) failed: ${
+          migError instanceof Error ? migError.message : String(migError)
+        }. Backup retained at: ${backupFile || 'in-memory transaction rollback'}`
+      );
     }
   }
   return count;

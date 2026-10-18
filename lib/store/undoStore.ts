@@ -15,7 +15,7 @@ export interface UndoState {
   triggerUndo: () => Promise<void>;
 }
 
-let undoTimer: any = null;
+let undoTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const useUndoStore = create<UndoState>((set, get) => ({
   visible: false,

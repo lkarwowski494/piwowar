@@ -24,6 +24,39 @@ docs/knowledge-base/
 
 ## 2. Doctor Wad Piwa (Troubleshooting Doctor — 20 Wad Sensorycznych)
 
+### 2.0. Alfabetyczny Indeks Sensoryczny (Szybka Diagnoza w < 5 sekund)
+
+Szukaj bezpośrednio po odczuciu w ustach lub nosie, aby natychmiast przejść do procedury ratunkowej w tabeli:
+
+| Wrażenie Sensoryczne (Co czujesz?) | Prawdopodobna Wada | Pozycja w Tabeli |
+| :--- | :--- | :---: |
+| **Aceton / Zmywacz do paznokci** | Octan etylu / Rozpuszczalnik | [Wada #6](#doctor-wad-piwa) |
+| **Alkohol piekący / Rozgrzewanie w gardle** | Alkohole Wyższe (Fuzle) | [Wada #19](#doctor-wad-piwa) |
+| **Apteka / Szpital / Woda z basenu** | Chlorofenole | [Wada #20](#doctor-wad-piwa) |
+| **Bandaż / Plastik / Dym** | Fenole | [Wada #5](#doctor-wad-piwa) |
+| **Brak piany / Piana opada w sekundy** | Niska Piana / Brak Piany | [Wada #17](#doctor-wad-piwa) |
+| **Cierpkość / Ściąganie policzków (herbata)** | Ściąganie Garbnikowe (Astringency) | [Wada #13](#doctor-wad-piwa) |
+| **Farba emulsyjna / Świeżo skoszona trawa** | Aldehyd octowy | [Wada #3](#doctor-wad-piwa) |
+| **Fontanna piany po odkapslowaniu** | Przegazowanie (Gushing) | [Wada #16](#doctor-wad-piwa) |
+| **Goździki** | Fenole (4-VG) | [Wada #5](#doctor-wad-piwa) |
+| **Gotowana kukurydza / Seler / Warzywa** | DMS (Sulfid dimetylu) | [Wada #2](#doctor-wad-piwa) |
+| **Jabłko zielone (niedojrzałe)** | Aldehyd octowy | [Wada #3](#doctor-wad-piwa) |
+| **Jogurt / Kwaśne mleko / Czysta kwasowość** | Kwas mlekowy | [Wada #8](#doctor-wad-piwa) |
+| **Karton mokry / Stary papier / Miód / Sherry** | Utlenienie (Staling) | [Wada #4](#doctor-wad-piwa) |
+| **Krew / Rdza / Monety / Posmak żelaza** | Smak Metaliczny | [Wada #12](#doctor-wad-piwa) |
+| **Masło / Toffi / Popcorn maślany / Śliskość** | Diacetyl | [Wada #1](#doctor-wad-piwa) |
+| **Mętność po wyjęciu piwa z lodówki** | Zmętnienie na zimno (Chill Haze) | [Wada #18](#doctor-wad-piwa) |
+| **Ocet winny / Ostry kwas octowy** | Kwas octowy | [Wada #9](#doctor-wad-piwa) |
+| **Pieczarki / Sos sojowy / Rosół / Mięso** | Autoliza Drożdży | [Wada #11](#doctor-wad-piwa) |
+| **Pot / Przypalona guma / Skunks (UV)** | Światłowstręt (Lightstruck / Skunks) | [Wada #10](#doctor-wad-piwa) |
+| **Wybuchające butelki / Pękające szkło** | Granat Butelkowy (Bottle Bomb) | [Wada #14](#doctor-wad-piwa) |
+| **Zatrzymana fermentacja / Wysokie FG** | Zatrzymanie Fermentacji (Stuck) | [Wada #15](#doctor-wad-piwa) |
+| **Zgniłe jaja / Kanalizacja / Zapałki** | Siarkowodór ($H_2S$) | [Wada #7](#doctor-wad-piwa) |
+
+---
+
+### 2.1. Tabela 20 Wad Sensorycznych i Procedury Ratunkowe
+
 | # | Wada Sensoryczna | Objaw (Co czujesz?) | Mechanizm Biologiczny / Chemiczny | Zdatne do picia? | Instrukcja Ratunkowa w 3 Krokach |
 | :-: | :--- | :--- | :--- | :---: | :--- |
 | **1** | **Diacetyl** | Masło, toffi, popcorn maślany, śliskość na języku | Prekursor alfa-acetomleczan utleniony do diacetylu przez przedwczesne schłodzenie | TAK | 1. Podnieś temp. fermentacji o 2–3°C na 48h (przerwa diacetylowa).<br>2. Nie oddzielaj piwa od drożdży zbyt wcześnie.<br>3. Zrób test podgrzewanej próbki przed rozlewem. |
