@@ -3,6 +3,9 @@ node_modules/
 dist/
 web-build/
 *.db
+!tests/fixtures/*.db
+tests/fixtures/*-test-run.db
+tests/fixtures/backup_pre_migration.db
 *.db-journal
 *.db-wal
 *.db-shm

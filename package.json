@@ -9,10 +9,7 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "check:i18n": "node scripts/check-i18n.mjs",
-    "verify": "npm run check:i18n && npm run typecheck && npm test",
-    "build:ios": "eas build --platform ios --profile production",
-    "submit:ios": "eas submit --platform ios --profile production",
-    "ship:testflight": "eas build --platform ios --profile production --auto-submit"
+    "verify": "npm run check:i18n && npm run typecheck && npm test"
   },
   "dependencies": {
     "expo": "~57.0.26",

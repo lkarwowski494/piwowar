@@ -34,7 +34,9 @@ describe('Database Migration Engine', () => {
     const fixturePath = resolve(__dirname, 'fixtures/v1.0-legacy.db');
     const testDbPath = resolve(__dirname, 'fixtures/v1.0-test-run.db');
     const backupDbPath = resolve(__dirname, 'fixtures/backup_pre_migration.db');
-
+    if (!existsSync(fixturePath)) {
+      require('../scripts/generate-legacy-fixture.cjs');
+    }
     expect(existsSync(fixturePath)).toBe(true);
 
     // Clean up any stale test runs
