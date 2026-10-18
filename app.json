@@ -39,6 +39,8 @@
         "CFBundleAllowMixedLocalizations": true,
         "ITSAppUsesNonExemptEncryption": false,
         "NSBluetoothAlwaysUsageDescription": "Aplikacja Piwowar używa Bluetooth wyłącznie do bezprzewodowego odczytu gęstości i temperatury ze spławika cyfrowego Tilt Hydrometer w 100% offline.",
+        "NSSupportsLiveActivities": true,
+        "NSSupportsLiveActivitiesFrequentUpdates": true,
         "CFBundleLocalizations": [
           "pl", "en", "cs", "sk", "hu", "ro", "bg", "hr", "sl", "sr",
           "lt", "lv", "et", "uk", "es", "es-MX", "pt", "pt-BR", "de", "fr",

@@ -22,6 +22,8 @@ import { CraftInput } from '../../components/CraftInput';
 import { calculateStrikeWaterTemp } from '../../lib/brewing/strikeWater';
 import { correctRefractometerFinalGravity } from '../../lib/brewing/refractometer';
 import { SEED_SAMPLE_RECIPE } from '../../lib/db/seeds';
+import { startBrewLiveActivity, updateBrewLiveActivity, endBrewLiveActivity } from '../../lib/native/liveActivities';
+import { syncBrewSessionToWatch } from '../../lib/native/watchConnectivity';
 import { THEME } from '../../lib/theme';
 import { t } from '../../lib/i18n';
 
@@ -79,6 +81,33 @@ export default function BrewScreen() {
       if (timer) clearInterval(timer);
     };
   }, [isRunning, tick]);
+
+  // Synchronize Live Activities (Dynamic Island / Lock Screen) & Apple Watch
+  useEffect(() => {
+    if (isActive && recipe) {
+      const stepItem = steps[currentStepIndex];
+      startBrewLiveActivity({
+        recipeName: recipe.name,
+        batchVolumeL: recipe.target_volume_l,
+        stageName: stage,
+        stepName: stepItem?.name || 'Zacieranie',
+        durationSeconds: secondsRemaining,
+        isRunning,
+        nextHopName: hopAlert?.name,
+        nextHopWeightG: hopAlert?.weightG
+      }).catch(() => {});
+
+      syncBrewSessionToWatch({
+        recipeName: recipe.name,
+        stepName: stepItem?.name || 'Zacieranie',
+        secondsRemaining,
+        isRunning,
+        triggerTaptic: !!hopAlert
+      }).catch(() => {});
+    } else {
+      endBrewLiveActivity().catch(() => {});
+    }
+  }, [isActive, stage, currentStepIndex, isRunning, secondsRemaining, hopAlert]);
 
   const handlePauseResume = async () => {
     if (Platform.OS !== 'web') {

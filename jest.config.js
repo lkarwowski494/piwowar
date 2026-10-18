@@ -5,7 +5,9 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
-    '^react-native$': '<rootDir>/__mocks__/react-native.js'
+    '^react-native$': '<rootDir>/__mocks__/react-native.js',
+    '^expo-av$': '<rootDir>/__mocks__/expo-av.js',
+    '\\.(wav|mp3|ogg)$': '<rootDir>/__mocks__/fileMock.js'
   },
   testMatch: ['**/tests/**/*.test.ts']
 };

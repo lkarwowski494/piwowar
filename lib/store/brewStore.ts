@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import { FullRecipe, MashStep, RecipeHop } from '../types/domain';
+import { playKettleGong, playWorkshopBell, playHopChime } from '../audio/soundPlayer';
 
 export type BrewStage = 'idle' | 'mashing' | 'boiling' | 'whirlpool' | 'done';
 
@@ -112,10 +113,12 @@ export const useBrewStore = create<BrewState>((set, get) => ({
     const nextIdx = currentStepIndex + 1;
 
     if (nextIdx >= steps.length) {
+      playWorkshopBell().catch(() => {});
       set({ stage: 'done', isRunning: false, secondsRemaining: 0 });
       return;
     }
 
+    playKettleGong().catch(() => {});
     const nextStepItem = steps[nextIdx];
     const nextStage: BrewStage =
       nextStepItem.type === 'mash'
@@ -177,6 +180,7 @@ export const useBrewStore = create<BrewState>((set, get) => ({
         (h) => h.use_stage === 'boil' && h.boil_time_mins === minutesLeft
       );
       if (matchingHop && (secondsRemaining - 1) % 60 === 0) {
+        playHopChime().catch(() => {});
         set({ hopAlert: { name: matchingHop.name, weightG: matchingHop.weight_g } });
       }
     }

@@ -25,6 +25,13 @@ import { CraftButton } from '../../components/CraftButton';
 import { CraftInput } from '../../components/CraftInput';
 import { CraftModal } from '../../components/CraftModal';
 import { BjcpStyle, EquipmentProfile, InventoryHop, InventoryFermentable, InventoryYeast } from '../../lib/types/domain';
+import {
+  isBrewSoundEnabled,
+  setBrewSoundEnabled,
+  playKettleGong,
+  playWorkshopBell,
+  playHopChime
+} from '../../lib/audio/soundPlayer';
 import { THEME } from '../../lib/theme';
 import { t } from '../../lib/i18n';
 
@@ -53,6 +60,15 @@ export default function SettingsScreen() {
   const [invName, setInvName] = useState('');
   const [invAmount, setInvAmount] = useState('100');
   const [invParam, setInvParam] = useState('12.0'); // AA% for hops, or color for malt
+
+  // Audio Alerts state
+  const [soundActive, setSoundActive] = useState(isBrewSoundEnabled());
+
+  const handleToggleSound = () => {
+    const next = !soundActive;
+    setBrewSoundEnabled(next);
+    setSoundActive(next);
+  };
 
   const loadData = async () => {
     const db = await openAppDatabase();
@@ -172,6 +188,49 @@ export default function SettingsScreen() {
             variant={isPro ? 'secondary' : 'primary'}
             style={{ marginTop: 12, minHeight: 44 }}
           />
+        </CraftCard>
+
+        {/* Workshop PCM Audio Alerts */}
+        <CraftCard>
+          <View style={styles.proHeader}>
+            <Text style={styles.sectionTitle}>Alarmy Warsztatowe (PCM)</Text>
+            <TouchableOpacity
+              onPress={handleToggleSound}
+              style={[styles.badge, soundActive ? styles.badgePro : styles.badgeFree]}
+            >
+              <Text style={styles.badgeText}>{soundActive ? 'DŹWIĘK WŁĄCZONY' : 'WYCISZONE'}</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.proDesc}>
+            Wysokopenetrujące sygnały akustyczne 16-bit 44.1kHz mono słyszalne ponad szumem gotującego się gara i wyciągu kuchennego (działają także w trybie cichym iOS).
+          </Text>
+
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+            <View style={{ flex: 1 }}>
+              <CraftButton
+                label="🍲 Gong kadzi"
+                onPress={() => playKettleGong()}
+                variant="secondary"
+                style={{ minHeight: 44 }}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CraftButton
+                label="🔔 Dzwonek"
+                onPress={() => playWorkshopBell()}
+                variant="secondary"
+                style={{ minHeight: 44 }}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CraftButton
+                label="🌿 Chmiel"
+                onPress={() => playHopChime()}
+                variant="secondary"
+                style={{ minHeight: 44 }}
+              />
+            </View>
+          </View>
         </CraftCard>
 
         {/* Spiżarnia i Magazyn Surowców (Z-045) */}
