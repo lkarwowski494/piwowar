@@ -59,6 +59,11 @@ jobs:
       - name: Prebuild native iOS project
         run: npx expo prebuild --platform ios --no-install --clean
 
+      - name: Copy native sound assets & audio player to app bundle
+        run: |
+          cp -f ios/*.wav "ios/$APP_DIR/" 2>/dev/null || true
+          cp -f ios/PiwowarAudioPlayer.* "ios/$APP_DIR/" 2>/dev/null || true
+
       - name: Compute & set monotonic build number
         id: ver
         run: |
